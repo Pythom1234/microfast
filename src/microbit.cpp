@@ -585,8 +585,21 @@ void calibrateCompass() {
 ///////////////////////////////////////////////////////////////////////////////
 
 namespace sound {
-void tone(float frequency, u64 duration, u8 volume = 100) {
+void tone(float freq, u64 duration, u8 volume) {
   // TODO
+  u32 period_us = 1000000 / freq;
+  u32 high_time = (period_us * volume) / 100;
+  u32 low_time = period_us - high_time;
+  while (duration--) {
+    pins::setDigital(SPEAKER, 1);
+    volatile u32 x = high_time * 6;
+    while (x--)
+      ;
+    pins::setDigital(SPEAKER, 0);
+    volatile u32 y = low_time * 6;
+    while (y--)
+      ;
+  }
 }
 } // namespace sound
 

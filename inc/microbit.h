@@ -118,6 +118,7 @@ void calibrateCompass();
 
 namespace sound {
 using sensors::microphone;
+void tone(float freq, u64 duration, u8 volume = 100);
 } // namespace sound
 
 u8 rnd();
