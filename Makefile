@@ -11,22 +11,28 @@ CFLAGS := $(CPU_FLAGS) -nostdlib -nostdinc -nodefaultlibs -Oz -Iinc -nostartfile
 -ffunction-sections -fdata-sections -g0
 LDFLAGS := -Wl,-T,linker.ld -Wl,--gc-sections $(STDLIB)
 
+.ONESHELL:
+	SHELL := /bin/bash
+
 all: clean compile flash
 
 compile: $(SRCS)
+	@set -e
 	mkdir -p build
 	clang $(CFLAGS) $^ $(LDFLAGS) -o build/main.elf
 	llvm-objcopy -O ihex build/main.elf build/main.hex
 	llvm-objcopy -O binary build/main.elf build/main.bin
 
 clean:
+	@set -e
 	rm -rf build/*
 
 flash: all
-	killall -q -9 openocd || true
-	openocd -f interface/cmsis-dap.cfg \
-			-f target/nrf52.cfg \
-			-c "program build/main.hex reset"
+	@set -e
+	for id in $$(pyocd json | jq -r '.boards[].unique_id'); do \
+	    pyocd flash build/main.hex --target nrf52 --uid $$id & \
+	wait; \
+	done; \
 
 disasm:
 	arm-none-eabi-objdump -m arm -D -M force-thumb build/main.elf

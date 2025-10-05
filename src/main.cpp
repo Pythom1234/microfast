@@ -221,7 +221,7 @@ int main() {
   // }
   // microbit::sensors::calibrateCompass();
   // u16 x = 20;
-
+  on1();
   while (1) {
     // u16 x = microbit::pins::getAnalog(PIN_1);
     // for (u32 i = 0; i < 8; i++)
