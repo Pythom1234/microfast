@@ -1,0 +1,5 @@
+AllowShortFunctionsOnASingleLine: false
+BreakTemplateDeclarations: Yes
+DerivePointerAlignment: false
+PointerAlignment: Left
+AlignTrailingComments: false

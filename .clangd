@@ -1,0 +1,13 @@
+CompileFlags:
+  Add:
+    - -I../inc
+    - -I/usr/arm-none-eabi/include/c++/14.2.0/arm-none-eabi/thumb/v7e-m+fp/hard
+    - -I/usr/arm-none-eabi/include/c++/14.2.0
+    - -I/usr/arm-none-eabi/include
+    - --target=armv7m-none-eabi
+    - -mcpu=cortex-m4
+    - -mthumb
+    - -mfpu=fpv4-sp-d16
+    - -mfloat-abi=hard
+    - -nostdlib
+    - -nodefaultlibs
