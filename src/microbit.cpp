@@ -230,6 +230,7 @@ void setAnalog(u8 pin, u16 value, u32 period) {
   }
   Peripheral::PWM[i]->ENABLE = 0x1;
   Peripheral::PWM[i]->EVENTS_STOPPED = 0x0;
+  // EVENTS_SEQEND0 -> TASKS_STOP
   Peripheral::PWM[i]->SHORTS = 0x1;
   Peripheral::PWM[i]->COUNTERTOP = countertop;
   Peripheral::PWM[i]->PRESCALER = prescaler;

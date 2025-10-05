@@ -35,9 +35,10 @@ u8 read(u8 reg) {
 
 int main() {
   microbit::uarte::setBaudrate(microbit::uarte::BaudRate::Baud115200);
-  microbit::print("\033[2J\033[H"
-                  "\033[1;33m-----------------\033[0m\n\r\033[1;31mmicro:bit "
-                  "console\033[0m\n\r\033[1;33m-----------------\033[0m\n\r");
+  // microbit::print("\033[2J\033[H"
+  //                 "\033[1;33m-----------------\033[0m\n\r\033[1;31mmicro:bit
+  //                 "
+  //                 "console\033[0m\n\r\033[1;33m-----------------\033[0m\n\r");
   // microbit::pins::setDigital(Pin::RUN_MIC, 1);
   // float i = 1753;
   // const Pin r[] = {Pin::ROW_1, Pin::ROW_2, Pin::ROW_3, Pin::ROW_4,
@@ -129,10 +130,10 @@ int main() {
   //   // delay(1000000);
   // }
   // microbit::sensors::calibrateCompass();
-  u16 x = 20;
-  // for (u32 i = 0; i < 1000; i++)
+  // u16 x = 20;
   while (1) {
     // u16 x = microbit::pins::getAnalog(PIN_1);
+    // microbit::pins::setAnalog(SPEAKER, 512, x * 100);
     // for (u32 i = 0; i < 30000; i++)
     //   microbit::pins::setAnalog(PIN_16, x, 20000);
     // for (u32 i = 0; i < 30000; i++)
@@ -147,7 +148,7 @@ int main() {
     // // microbit::pins::setAnalog(PIN_14, x, 20000);
     // // microbit::pins::setAnalog(PIN_15, x, 20000);
     // // microbit::pins::setAnalog(PIN_13, x, 20000);
-    // // print((string)x);
+    // print((string)x);
     // delay(500000);
     // x += 5;
     // if (x == 140)
