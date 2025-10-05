@@ -133,25 +133,25 @@ int main() {
   // for (u32 i = 0; i < 1000; i++)
   while (1) {
     // u16 x = microbit::pins::getAnalog(PIN_1);
-    for (u32 i = 0; i < 30000; i++)
-      microbit::pins::setAnalog(PIN_16, x, 20000);
-    for (u32 i = 0; i < 30000; i++)
-      microbit::pins::setAnalog(PIN_15, x, 20000);
-    for (u32 i = 0; i < 30000; i++)
-      microbit::pins::setAnalog(PIN_14, x, 20000);
-    for (u32 i = 0; i < 30000; i++)
-      microbit::pins::setAnalog(PIN_13, x, 20000);
+    // for (u32 i = 0; i < 30000; i++)
+    //   microbit::pins::setAnalog(PIN_16, x, 20000);
+    // for (u32 i = 0; i < 30000; i++)
+    //   microbit::pins::setAnalog(PIN_15, x, 20000);
+    // for (u32 i = 0; i < 30000; i++)
+    //   microbit::pins::setAnalog(PIN_14, x, 20000);
+    // for (u32 i = 0; i < 30000; i++)
+    //   microbit::pins::setAnalog(PIN_13, x, 20000);
 
-    // microbit::pins::setAnalog(SPEAKER, x / 2, x);
-    // microbit::pins::setAnalog(PIN_16, x, 20000);
-    // microbit::pins::setAnalog(PIN_14, x, 20000);
-    // microbit::pins::setAnalog(PIN_15, x, 20000);
-    // microbit::pins::setAnalog(PIN_13, x, 20000);
-    // print((string)x);
-    delay(500000);
-    x += 5;
-    if (x == 140)
-      x = 20;
+    // // microbit::pins::setAnalog(SPEAKER, x / 2, x);
+    // // microbit::pins::setAnalog(PIN_16, x, 20000);
+    // // microbit::pins::setAnalog(PIN_14, x, 20000);
+    // // microbit::pins::setAnalog(PIN_15, x, 20000);
+    // // microbit::pins::setAnalog(PIN_13, x, 20000);
+    // // print((string)x);
+    // delay(500000);
+    // x += 5;
+    // if (x == 140)
+    //   x = 20;
     // string a = x;
     // a.push('x', -3);
     // string b = a;
