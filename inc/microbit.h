@@ -100,6 +100,12 @@ u8* readBuffer(u8 address, u16 size);
 u8 readByte(u8 address);
 } // namespace i2c
 
+namespace radio {
+void init();
+void send(u8* packet);
+u8* recieve();
+} // namespace radio
+
 namespace sensors {
 struct vec {
   i32 x;

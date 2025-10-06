@@ -27,7 +27,7 @@ clean:
 	@set -e
 	rm -rf build/*
 
-flash: all
+flash:
 	@set -e
 	for id in $$(pyocd json | jq -r '.boards[].unique_id'); do \
 	    pyocd flash build/main.hex --target nrf52 --uid $$id & \
