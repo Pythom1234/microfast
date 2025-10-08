@@ -501,6 +501,44 @@ typedef struct {
   ptr POWER;
 } RADIO_Type;
 
+typedef struct {
+  ptr TASKS_HFCLKSTART;
+  ptr TASKS_HFCLKSTOP;
+  ptr TASKS_LFCLKSTART;
+  ptr TASKS_LFCLKSTOP;
+  ptr TASKS_CAL;
+  ptr TASKS_CTSTART;
+  ptr TASKS_CTSTOP;
+  ptr RESERVED0[57];
+  ptr EVENTS_HFCLKSTARTED;
+  ptr EVENTS_LFCLKSTARTED;
+  ptr RESERVED1;
+  ptr EVENTS_DONE;
+  ptr EVENTS_CTTO;
+  ptr RESERVED2[5];
+  ptr EVENTS_CTSTARTED;
+  ptr EVENTS_CTSTOPPED;
+  ptr RESERVED3[117];
+  ptr INTENSET;
+  ptr INTENCLR;
+  ptr RESERVED4[63];
+  ptr HFCLKRUN;
+  ptr HFCLKSTAT;
+  ptr RESERVED5;
+  ptr LFCLKRUN;
+  ptr LFCLKSTAT;
+  ptr LFCLKSRCCOPY;
+  ptr RESERVED6[62];
+  ptr LFCLKSRC;
+  ptr RESERVED7[3];
+  ptr HFXODEBOUNCE;
+  ptr LFXODEBOUNCE;
+  ptr RESERVED8[2];
+  ptr CTIV;
+  ptr RESERVED9[8];
+  ptr TRACECONFIG;
+} CLOCK_Type;
+
 GPIO_Type* const P0 = (GPIO_Type*)0x50000000;
 GPIO_Type* const P1 = (GPIO_Type*)0x50000300;
 UART_Type* const UART = (UART_Type*)0x40002000;
@@ -515,6 +553,7 @@ TIMER_Type* const TIMER2 =
     (TIMER_Type*)0x4000A000; // timer for all time from start TODO!
 TIMER_Type* const TIMER3 = (TIMER_Type*)0x4001A000;
 TIMER_Type* const TIMER4 = (TIMER_Type*)0x4001B000;
+CLOCK_Type* const CLOCK = (CLOCK_Type*)0x40000000;
 SAADC_Type* const SAADC = (SAADC_Type*)0x40007000;
 PWM_Type* const PWM0 = (PWM_Type*)0x4001C000;
 PWM_Type* const PWM1 = (PWM_Type*)0x40021000;

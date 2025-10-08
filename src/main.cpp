@@ -234,21 +234,17 @@ int main() {
       break;
     }
   }
+  radio::init();
   while (1) {
-    if (tx) {
-      u8* x = (u8*)calloc(32, 1);
-      x[0] = 'a';
-      x[1] = 'h';
-      x[2] = 'o';
-      x[3] = 'j';
-      radio::send(x);
-      print("sent");
-      free(x);
-    } else {
-      print("recieving");
-      u8* x = radio::recieve();
-      print("recieved");
-      print((char*)x);
+    if (!pins::getDigital(BUTTON_A)) {
+      tx = true;
+      on1();
+      break;
+    }
+    if (!pins::getDigital(BUTTON_B)) {
+      tx = false;
+      on2();
+      break;
     }
     // u16 x = microbit::pins::getAnalog(PIN_1);
     // for (u32 i = 0; i < 8; i++)

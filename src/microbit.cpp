@@ -399,27 +399,24 @@ u8 readByte(u8 address) {
 
 namespace radio {
 void init() {
+  Peripheral::CLOCK->EVENTS_HFCLKSTARTED = 0;
+  Peripheral::CLOCK->TASKS_HFCLKSTART = 1;
+  while (Peripheral::CLOCK->EVENTS_HFCLKSTARTED == 0)
+    ;
   Peripheral::RADIO->TXPOWER = 0x0;
   Peripheral::RADIO->FREQUENCY = 0x7;
   Peripheral::RADIO->MODE = 0x0;
-
   Peripheral::RADIO->BASE0 = 0x75626974;
   Peripheral::RADIO->PREFIX0 = 0x0;
   Peripheral::RADIO->TXADDRESS = 0x0;
   Peripheral::RADIO->RXADDRESSES = 0x1;
-
   Peripheral::RADIO->PCNF0 = 0x00000008; // TODO napsat co to je
   Peripheral::RADIO->PCNF1 = 0x02040020;
-
   Peripheral::RADIO->CRCCNF = 0x2;
   Peripheral::RADIO->CRCPOLY = 0x11021;
   Peripheral::RADIO->CRCINIT = 0xFFFF;
-
   Peripheral::RADIO->DATAWHITEIV = 0x18;
-
-  // Peripheral::RADIO->INTENSET = 0x00000008;
-  // Peripheral::RADIO->SHORTS |= RADIO_SHORTS_ADDRESS_RSSISTART_Msk;
-  // Peripheral::RADIO->PACKETPTR = (ptr) receiveBuffer; // TODO
+  Peripheral::RADIO->SHORTS = 0x10;
 }
 void send(u8* packet) {
   Peripheral::RADIO->PACKETPTR = (ptr)packet;
@@ -445,9 +442,7 @@ u8* recieve() {
     ;
   Peripheral::RADIO->EVENTS_END = 0x0;
   Peripheral::RADIO->TASKS_START = 0x1;
-  msga("x");
-  u32 x = 0xFFFF;
-  while (!Peripheral::RADIO->EVENTS_END && x--)
+  while (!Peripheral::RADIO->EVENTS_END)
     ;
   if (Peripheral::RADIO->CRCSTATUS == 0x1) {
     int sample = (int)Peripheral::RADIO->RSSISAMPLE; // TODO
