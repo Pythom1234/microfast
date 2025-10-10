@@ -95,6 +95,9 @@ char read(u32 timeout) {
            !Peripheral::TIMER1->EVENTS_COMPARE[0] &&
            !Peripheral::UART->ERRORSRC)
       ;
+    if (Peripheral::TIMER1->EVENTS_COMPARE[0]) {
+      inp = 0;
+    }
     Peripheral::UART->ERRORSRC = 0x0;
     if (!Peripheral::TIMER1->EVENTS_COMPARE[0]) {
       inp = Peripheral::UART->RXD;
@@ -112,7 +115,6 @@ void setBaudrate(BaudRate baudrate) {
 }
 void startTX() {
   Peripheral::UARTE1->ENABLE = 0x8;
-  Peripheral::UARTE1->TASKS_STOPTX = 0x1;
   // Peripheral::UARTE1->BAUDRATE = 0x01D7E000; // 115200 baud
   Peripheral::UARTE1->PSEL.TXD = Pin::UART_TX;
 }
@@ -122,7 +124,6 @@ void stopTX() {
 }
 void startRX() {
   Peripheral::UARTE1->ENABLE = 0x8;
-  Peripheral::UARTE1->TASKS_STOPRX = 0x1;
   // Peripheral::UARTE1->BAUDRATE = 0x01D7E000; // 115200 baud
   Peripheral::UARTE1->PSEL.RXD = Pin::UART_RX;
 }
@@ -139,18 +140,27 @@ void write(const char* data, u16 size) {
   Peripheral::UARTE1->TXD.MAXCNT = size;
   Peripheral::UARTE1->TXD.PTR = (ptr)buf;
   Peripheral::UARTE1->EVENTS_ENDTX = 0x0;
+  Peripheral::UARTE1->EVENTS_TXSTARTED = 0x0;
   Peripheral::UARTE1->TASKS_STARTTX = 0x1;
+  while (!Peripheral::UARTE1->EVENTS_TXSTARTED)
+    ;
   while (!Peripheral::UARTE1->EVENTS_ENDTX && !Peripheral::UARTE1->ERRORSRC)
     ;
   Peripheral::UARTE1->ERRORSRC = 0x0;
+  Peripheral::UARTE1->EVENTS_TXSTOPPED = 0x0;
   Peripheral::UARTE1->TASKS_STOPTX = 0x1;
+  while (!Peripheral::UARTE1->EVENTS_TXSTOPPED)
+    ;
 };
 char* read(u16 size, u32 timeout) {
   char* buf = (char*)malloc(size); // TODO: vyresit: new/malloc/static/char[]
   Peripheral::UARTE1->RXD.MAXCNT = size;
   Peripheral::UARTE1->RXD.PTR = (ptr)buf;
   Peripheral::UARTE1->EVENTS_ENDRX = 0x0;
+  Peripheral::UARTE1->EVENTS_RXSTARTED = 0x0;
   Peripheral::UARTE1->TASKS_STARTRX = 0x1;
+  while (!Peripheral::UARTE1->EVENTS_RXSTARTED)
+    ;
   if (timeout != 0) {
     Peripheral::TIMER1->PRESCALER = 0x4;
     Peripheral::TIMER1->EVENTS_COMPARE[0] = 0x0;
@@ -161,6 +171,10 @@ char* read(u16 size, u32 timeout) {
     while (!Peripheral::UARTE1->EVENTS_ENDRX && !Peripheral::UARTE1->ERRORSRC &&
            !Peripheral::TIMER1->EVENTS_COMPARE[0])
       ;
+    if (Peripheral::TIMER1->EVENTS_COMPARE[0]) {
+      free(buf); // TODO kdyz nebude malloc, tak ani free
+      buf = nullptr;
+    }
     Peripheral::TIMER1->TASKS_STOP = 0x1;
   } else {
     while (!Peripheral::UARTE1->EVENTS_ENDRX && !Peripheral::UARTE1->ERRORSRC)
@@ -410,7 +424,9 @@ void init() {
   Peripheral::RADIO->PREFIX0 = 0x0;
   Peripheral::RADIO->TXADDRESS = 0x0;
   Peripheral::RADIO->RXADDRESSES = 0x1;
-  Peripheral::RADIO->PCNF0 = 0x00000008; // TODO napsat co to je
+  // 8bit LENGTH field, no S0/S1, 8bit preamble, exclude CRC from LENGTH
+  Peripheral::RADIO->PCNF0 = 0x00000008;
+  // 32B payload, 4B base addr, little-endian, whitening on
   Peripheral::RADIO->PCNF1 = 0x02040020;
   Peripheral::RADIO->CRCCNF = 0x2;
   Peripheral::RADIO->CRCPOLY = 0x11021;
@@ -433,26 +449,49 @@ void send(u8* packet) {
   while (!Peripheral::RADIO->EVENTS_DISABLED)
     ;
 }
-u8* recieve() {
-  u8* buffer = (u8*)malloc(32); // TODO: free
-  Peripheral::RADIO->PACKETPTR = (ptr)buffer;
+u8* recieve(u32 timeout) {
+  u8* buf = (u8*)malloc(32); // TODO: free
+  Peripheral::RADIO->PACKETPTR = (ptr)buf;
   Peripheral::RADIO->EVENTS_READY = 0x0;
   Peripheral::RADIO->TASKS_RXEN = 0x1;
   while (!Peripheral::RADIO->EVENTS_READY)
     ;
   Peripheral::RADIO->EVENTS_END = 0x0;
+  Peripheral::RADIO->EVENTS_ADDRESS = 0x0;
   Peripheral::RADIO->TASKS_START = 0x1;
-  while (!Peripheral::RADIO->EVENTS_END)
-    ;
+  if (timeout != 0) {
+    Peripheral::TIMER1->PRESCALER = 0x4;
+    Peripheral::TIMER1->EVENTS_COMPARE[0] = 0x0;
+    Peripheral::TIMER1->CC[0] = timeout;
+    Peripheral::TIMER1->BITMODE = 0x3;
+    Peripheral::TIMER1->TASKS_CLEAR = 0x1;
+    Peripheral::TIMER1->TASKS_START = 0x1;
+    while (!Peripheral::RADIO->EVENTS_ADDRESS &&
+           !Peripheral::TIMER1->EVENTS_COMPARE[0])
+      ;
+    if (Peripheral::TIMER1->EVENTS_COMPARE[0]) {
+      free(buf);
+      buf = nullptr;
+    }
+    Peripheral::TIMER1->TASKS_STOP = 0x1;
+    while (!Peripheral::RADIO->EVENTS_END &&
+           !Peripheral::TIMER1->EVENTS_COMPARE[0])
+      ;
+  } else {
+    while (!Peripheral::RADIO->EVENTS_END)
+      ;
+  }
   if (Peripheral::RADIO->CRCSTATUS == 0x1) {
     int sample = (int)Peripheral::RADIO->RSSISAMPLE; // TODO
     // radioSignalStrength = -sample;
+  } else {
+    buf = nullptr;
   }
   Peripheral::RADIO->EVENTS_DISABLED = 0x0;
   Peripheral::RADIO->TASKS_DISABLE = 0x1;
   while (!Peripheral::RADIO->EVENTS_DISABLED)
     ;
-  return buffer;
+  return buf;
 }
 } // namespace radio
 

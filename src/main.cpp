@@ -221,30 +221,33 @@ int main() {
   // }
   // microbit::sensors::calibrateCompass();
   // u16 x = 20;
-  bool tx = true;
-  while (true) {
-    if (!pins::getDigital(BUTTON_A)) {
-      tx = true;
-      on1();
-      break;
-    }
-    if (!pins::getDigital(BUTTON_B)) {
-      tx = false;
-      on2();
-      break;
-    }
-  }
   radio::init();
+  u8* t = (u8*)calloc(32, 1);
   while (1) {
     if (!pins::getDigital(BUTTON_A)) {
-      tx = true;
-      on1();
-      break;
+      t[0] = 'A';
+      radio::send(t);
     }
     if (!pins::getDigital(BUTTON_B)) {
-      tx = false;
-      on2();
-      break;
+      t[0] = 'B';
+      radio::send(t);
+    }
+    u8* m = radio::recieve(100);
+    off1();
+    off2();
+    if (m != nullptr) {
+      string x;
+      for (u32 i = 0; i < 32; i++) {
+        x.push_back(m[i]);
+      }
+      print(x);
+      if (m[0] == 'A') {
+        on1();
+      }
+      if (m[0] == 'B') {
+        on2();
+      }
+      free(m);
     }
     // u16 x = microbit::pins::getAnalog(PIN_1);
     // for (u32 i = 0; i < 8; i++)

@@ -103,7 +103,7 @@ u8 readByte(u8 address);
 namespace radio {
 void init();
 void send(u8* packet);
-u8* recieve();
+u8* recieve(u32 timeout = 0);
 } // namespace radio
 
 namespace sensors {
