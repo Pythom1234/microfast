@@ -498,6 +498,11 @@ void setChannel(u32 channel) {
     return;
   Peripheral::RADIO->FREQUENCY = channel;
 }
+void setGroup(u32 group) {
+  if ((group < 0) || (group > 255))
+    return;
+  Peripheral::RADIO->PREFIX0 = group;
+}
 } // namespace radio
 
 ///////////////////////////////////////////////////////////////////////////////

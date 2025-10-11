@@ -106,6 +106,7 @@ void send(u8* packet);
 u8* recieve(u32 timeout = 0);
 u8 getSignalStrength();
 void setChannel(u32 channel);
+void setGroup(u32 group);
 } // namespace radio
 
 namespace sensors {
