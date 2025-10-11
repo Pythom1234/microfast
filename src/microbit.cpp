@@ -493,6 +493,11 @@ u8* recieve(u32 timeout) {
 u8 getSignalStrength() {
   return Peripheral::RADIO->RSSISAMPLE;
 }
+void setChannel(u32 channel) {
+  if ((channel < 0) || (channel > 83))
+    return;
+  Peripheral::RADIO->FREQUENCY = channel;
+}
 } // namespace radio
 
 ///////////////////////////////////////////////////////////////////////////////
