@@ -74,6 +74,8 @@ __reset:
     ldr r1, =0x00070000
     str r1, [r0]
 
+    // Initialize
+    bl __init
     // Start program
     bl main
     // Halt at end

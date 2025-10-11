@@ -32,16 +32,16 @@ clean:
 	@set -e
 	rm -rf build/*
 
-flash:
-	@set -e
-	pyocd flash build/main.hex
-
 # flash:
 # 	@set -e
-# 	for id in $$(pyocd json | jq -r '.boards[].unique_id'); do \
-# 	    pyocd flash build/main.hex --target nrf52 --uid $$id & \
-# 	wait; \
-# 	done; \
+# 	pyocd flash build/main.hex
+
+flash:
+	@set -e
+	for id in $$(pyocd json | jq -r '.boards[].unique_id'); do \
+	    pyocd flash build/main.hex --target nrf52 --uid $$id & \
+	wait; \
+	done; \
 
 disasm:
 	arm-none-eabi-objdump -m arm -D -M force-thumb build/main.elf

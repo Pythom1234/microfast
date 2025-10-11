@@ -18,23 +18,24 @@
  * <http://www.gnu.org/licenses/>.
  */
 
+#include "peripheral.h"
 #include "types.h"
 
 static u32* sp;
 
 static void msg(const char* str) {
-  *(ptr*)0x40002500 = 0x4;
-  *(ptr*)0x40002524 = 0x01D7E000;
-  *(ptr*)0x4000250C = 0x00000006;
-  *(ptr*)0x40002008 = 0x1;
+  *(ptr*)Peripheral::UART->ENABLE = 0x4;
+  *(ptr*)Peripheral::UART->BAUDRATE = 0x01D7E000;
+  *(ptr*)Peripheral::UART->PSEL.TXD = 0x00000006;
+  *(ptr*)Peripheral::UART->TASKS_STARTTX = 0x1;
   for (int i = 0; str[i] != '\0'; i++) {
-    *(ptr*)0x4000211C = 0x0;
-    *(ptr*)0x4000251C = str[i];
-    while (!*(ptr*)0x4000211C)
+    *(ptr*)Peripheral::UART->EVENTS_TXDRDY = 0x0;
+    *(ptr*)Peripheral::UART->TXD = str[i];
+    while (!*(ptr*)Peripheral::UART->EVENTS_TXDRDY)
       ;
   }
-  *(ptr*)0x4000200C = 0x1;
-  *(ptr*)0x40002500 = 0x0;
+  *(ptr*)Peripheral::UART->TASKS_STOPTX = 0x1;
+  *(ptr*)Peripheral::UART->ENABLE = 0x0;
 }
 
 static void after_fault() {
@@ -70,6 +71,10 @@ static void print_reg() {
   msg("\n\r\033[1;32mPSR\033[0m: 0x");
   msg(itoa(sp[7]));
   msg("\n\r");
+}
+
+void __init() {
+  // Peripheral::TIMER2
 }
 
 extern "C" {

@@ -548,7 +548,7 @@ RNG_Type* const RNG = (RNG_Type*)0x4000D000;
 TIMER_Type* const TIMER0 =
     (TIMER_Type*)0x40008000; // timer for `wait` functions TODO!
 TIMER_Type* const TIMER1 =
-    (TIMER_Type*)0x40009000; // timer for timeout (eg. uart::read())
+    (TIMER_Type*)0x40009000; // timer for internal functions use
 TIMER_Type* const TIMER2 =
     (TIMER_Type*)0x4000A000; // timer for all time from start TODO!
 TIMER_Type* const TIMER3 = (TIMER_Type*)0x4001A000;

@@ -715,6 +715,10 @@ void tone(float freq, u64 duration, u8 volume) {
 
 ///////////////////////////////////////////////////////////////////////////////
 
+void wait(u64 us) {
+
+}
+
 u8 rnd() {
   Peripheral::RNG->TASKS_START = 0x1;
   while (!Peripheral::RNG->EVENTS_VALRDY)
@@ -755,5 +759,4 @@ string input(const char* text, const char* end) {
     print(str, "");
   }
 }
-
 } // namespace microbit

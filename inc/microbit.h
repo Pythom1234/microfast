@@ -130,6 +130,7 @@ using sensors::microphone;
 void tone(float freq, u64 duration, u8 volume = 100);
 } // namespace sound
 
+void wait(u64 us);
 u8 rnd();
 void print(const char* text, const char* end = "\n\r");
 string input(const char* text, const char* end = "\n\r\4\3");
