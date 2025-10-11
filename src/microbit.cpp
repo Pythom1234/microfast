@@ -481,10 +481,7 @@ u8* recieve(u32 timeout) {
     while (!Peripheral::RADIO->EVENTS_END)
       ;
   }
-  if (Peripheral::RADIO->CRCSTATUS == 0x1) {
-    int sample = (int)Peripheral::RADIO->RSSISAMPLE; // TODO
-    // radioSignalStrength = -sample;
-  } else {
+  if (!Peripheral::RADIO->CRCSTATUS) {
     buf = nullptr;
   }
   Peripheral::RADIO->EVENTS_DISABLED = 0x0;
@@ -492,6 +489,9 @@ u8* recieve(u32 timeout) {
   while (!Peripheral::RADIO->EVENTS_DISABLED)
     ;
   return buf;
+}
+u8 getSignalStrength() {
+  return Peripheral::RADIO->RSSISAMPLE;
 }
 } // namespace radio
 

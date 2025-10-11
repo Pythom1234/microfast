@@ -236,11 +236,7 @@ int main() {
     off1();
     off2();
     if (m != nullptr) {
-      string x;
-      for (u32 i = 0; i < 32; i++) {
-        x.push_back(m[i]);
-      }
-      print(x);
+      print((string)radio::getSignalStrength());
       if (m[0] == 'A') {
         on1();
       }
