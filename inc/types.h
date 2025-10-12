@@ -453,9 +453,8 @@ public:
     return n;
   }
   template <typename T>
-  string operator+(const char* other) const {
-    string tmp = other;
-    return *this + tmp;
+  string operator+(T other) const {
+    return *this + string(other);
   }
   string operator*(const u32 other) const {
     string n;
@@ -486,5 +485,18 @@ public:
   string& operator+=(const char other) {
     push_back(other);
     return *this;
+  }
+  bool operator==(const string& other) const {
+    if (len != other.len)
+      return false;
+    for (u32 i = 0; i < len; i++) {
+      if (data[i] != other.data[i])
+        return false;
+    }
+    return true;
+  }
+  template <typename T>
+  bool operator==(T other) const {
+    return *this == string(other);
   }
 };

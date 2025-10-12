@@ -221,32 +221,36 @@ int main() {
   // }
   // microbit::sensors::calibrateCompass();
   // u16 x = 20;
-  while (1)
-    print(((string)micros()) + " " + (string)(millis() * 1000));
-  radio::init();
-  u8* t = (u8*)calloc(32, 1);
+  // radio::init();
+  // u8* t = (u8*)calloc(32, 1);
+  u8 i = 1;
   while (1) {
-    if (!pins::getDigital(Pin::BUTTON_A)) {
-      t[0] = 'A';
-      radio::send(t);
-    }
-    if (!pins::getDigital(Pin::BUTTON_B)) {
-      t[0] = 'B';
-      radio::send(t);
-    }
-    u8* m = radio::recieve(100);
-    off1();
-    off2();
-    if (m != nullptr) {
-      print((string)radio::getSignalStrength());
-      if (m[0] == 'A') {
-        on1();
-      }
-      if (m[0] == 'B') {
-        on2();
-      }
-      free(m);
-    }
+    for (u32 x = 0; x < (pins::getDigital(Pin::BUTTON_A) ? 100 : 5); x++)
+      display::drawImage((string)i);
+    i++;
+    if (i == 25)
+      i = 1;
+    // if (!pins::getDigital(Pin::BUTTON_A)) {
+    //   t[0] = 'A';
+    //   radio::send(t);
+    // }
+    // if (!pins::getDigital(Pin::BUTTON_B)) {
+    //   t[0] = 'B';
+    //   radio::send(t);
+    // }
+    // u8* m = radio::recieve(100);
+    // off1();
+    // off2();
+    // if (m != nullptr) {
+    //   print((string)radio::getSignalStrength());
+    //   if (m[0] == 'A') {
+    //     on1();
+    //   }
+    //   if (m[0] == 'B') {
+    //     on2();
+    //   }
+    //   free(m);
+    // }
     // u16 x = microbit::pins::getAnalog(PIN_1);
     // for (u32 i = 0; i < 8; i++)
     //   microbit::sound::tone(song[i], 100, 0);

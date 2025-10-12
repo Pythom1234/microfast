@@ -125,6 +125,12 @@ void calibrateCompass();
 */
 } // namespace sensors
 
+namespace display {
+void setPixel(u8 x, u8 y, bool val);
+void clear();
+void drawImage(string img);
+} // namespace display
+
 namespace sound {
 using sensors::microphone;
 void tone(float freq, u64 duration, u8 volume = 100);

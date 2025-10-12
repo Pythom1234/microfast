@@ -690,6 +690,109 @@ void calibrateCompass() {
 
 ///////////////////////////////////////////////////////////////////////////////
 
+namespace display {
+void setPixel(u8 x, u8 y, bool val) {
+  if (x > 4 || y > 4)
+    return;
+  const u32 rows[] = {Pin::ROW_1, Pin::ROW_2, Pin::ROW_3, Pin::ROW_4,
+                      Pin::ROW_5};
+  const u32 columns[] = {Pin::COL_1, Pin::COL_2, Pin::COL_3, Pin::COL_4,
+                         Pin::COL_5};
+  pins::setDigital(rows[y], val ? 1 : 0);
+  pins::setDigital(columns[x], val ? 0 : 1);
+}
+void clear() {
+  for (int x = 0; x < 5; x++) {
+    for (int y = 0; y < 5; y++) {
+      setPixel(x, y, 0);
+    }
+  }
+}
+void drawImage(string img) {
+  if (img == "1")
+    img = "00010:00100:00100:00000:00000";
+  if (img == "2")
+    img = "00010:00010:00100:00000:00000";
+  if (img == "3")
+    img = "00001:00010:00100:00000:00000";
+  if (img == "4")
+    img = "00000:00011:00100:00000:00000";
+  if (img == "5")
+    img = "00000:00001:00110:00000:00000";
+  if (img == "6")
+    img = "00000:00000:00111:00000:00000";
+  if (img == "7")
+    img = "00000:00000:00110:00001:00000";
+  if (img == "8")
+    img = "00000:00000:00100:00011:00000";
+  if (img == "9")
+    img = "00000:00000:00100:00010:00001";
+  if (img == "10")
+    img = "00000:00000:00100:00010:00010";
+  if (img == "11")
+    img = "00000:00000:00100:00100:00010";
+  if (img == "12")
+    img = "00000:00000:00100:00100:00100";
+  if (img == "13")
+    img = "00000:00000:00100:00100:01000";
+  if (img == "14")
+    img = "00000:00000:00100:01000:01000";
+  if (img == "15")
+    img = "00000:00000:00100:01000:10000";
+  if (img == "16")
+    img = "00000:00000:00100:11000:00000";
+  if (img == "17")
+    img = "00000:00000:01100:10000:00000";
+  if (img == "18")
+    img = "00000:00000:11100:00000:00000";
+  if (img == "19")
+    img = "00000:10000:01100:00000:00000";
+  if (img == "20")
+    img = "00000:11000:00100:00000:00000";
+  if (img == "21")
+    img = "10000:01000:00100:00000:00000";
+  if (img == "22")
+    img = "01000:01000:00100:00000:00000";
+  if (img == "23")
+    img = "01000:00100:00100:00000:00000";
+  if (img == "24" || img == "0")
+    img = "00100:00100:00100:00000:00000";
+  if (img == "happy")
+    img = "00000:01010:00000:10001:01110";
+  if (img == "sad")
+    img = "00000:01010:00000:01110:10001";
+  if (img == "heart")
+    img = "01010:11111:11111:01110:00100";
+  if (img == "small heart")
+    img = "00000:01010:01110:00100:00000";
+  if (img == "yes")
+    img = "00000:00001:00010:10100:01000";
+  if (img == "no")
+    img = "10001:01010:00100:01010:10001";
+  if (img == "confused")
+    img = "00000:01010:00000:01010:10101";
+  if (img == "asleep")
+    img = "00000:11011:00000:01110:00000";
+  if (img == "square")
+    img = "11111:10001:10001:10001:11111";
+  if (img == "small square")
+    img = "00000:01110:01010:01110:00000";
+  for (u8 y = 0; y < 5; y++) {
+    for (u8 x = 0; x < 5; x++) {
+      if (img[(y * 6) + x] == '1') {
+        setPixel(x, y, 1);
+        wait(1000);
+        setPixel(x, y, 0);
+      } else {
+        setPixel(x, y, 0);
+      }
+    }
+  }
+}
+} // namespace display
+
+///////////////////////////////////////////////////////////////////////////////
+
 namespace sound {
 void tone(float freq, u64 duration, u8 volume) {
   // TODO
@@ -721,6 +824,17 @@ void wait(u64 us) {
     ;
   Peripheral::TIMER0->TASKS_STOP = 0x1;
 }
+// void runAfter((void*)func, u64 us) { //TODO udelat udelat funkci, ktera
+// zavola po nejakem case jinou funkci pres IRQ
+//   Peripheral::TIMER0->BITMODE = 0x3;
+//   Peripheral::TIMER0->CC[0] = us;
+//   Peripheral::TIMER0->EVENTS_COMPARE[0] = 0x0;
+//   Peripheral::TIMER0->TASKS_CLEAR = 0x1;
+//   Peripheral::TIMER0->TASKS_START = 0x1;
+//   while (!Peripheral::TIMER0->EVENTS_COMPARE[0])
+//     ;
+//   Peripheral::TIMER0->TASKS_STOP = 0x1;
+// }
 u32 millis() {
   return Peripheral::RTC2->COUNTER * 125; // TODO: nepresne
 }
