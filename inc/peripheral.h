@@ -600,57 +600,57 @@ TWI_Type* const TWI[2] = {TWI0, TWI1};
 
 } // namespace Peripheral
 
-enum Pin {
-  PIN_0 = 2,
-  PIN_1 = 3,
-  PIN_2 = 4,
-  PIN_3 = 31,
-  PIN_4 = 28,
-  PIN_5 = 14,
-  PIN_6 = 37,
-  PIN_7 = 11,
-  PIN_8 = 10,
-  PIN_9 = 9,
-  PIN_10 = 30,
-  PIN_11 = 23,
-  PIN_12 = 12,
-  PIN_13 = 17,
-  PIN_14 = 1,
-  PIN_15 = 13,
-  PIN_16 = 34,
-  PIN_19 = 26,
-  PIN_20 = 32,
+namespace Pin {
+const u8 PIN_0 = 2;
+const u8 PIN_1 = 3;
+const u8 PIN_2 = 4;
+const u8 PIN_3 = 31;
+const u8 PIN_4 = 28;
+const u8 PIN_5 = 14;
+const u8 PIN_6 = 37;
+const u8 PIN_7 = 11;
+const u8 PIN_8 = 10;
+const u8 PIN_9 = 9;
+const u8 PIN_10 = 30;
+const u8 PIN_11 = 23;
+const u8 PIN_12 = 12;
+const u8 PIN_13 = 17;
+const u8 PIN_14 = 1;
+const u8 PIN_15 = 13;
+const u8 PIN_16 = 34;
+const u8 PIN_19 = 26;
+const u8 PIN_20 = 32;
 
-  BUTTON_A = 14,
-  BUTTON_B = 23,
-  LOGO = 36,
+const u8 BUTTON_A = 14;
+const u8 BUTTON_B = 23;
+const u8 LOGO = 36;
 
-  RUN_MIC = 20,
-  MIC_IN = 5,
-  SPEAKER = 0,
+const u8 RUN_MIC = 20;
+const u8 MIC_IN = 5;
+const u8 SPEAKER = 0;
 
-  UART_TX = 6,
-  UART_RX = 40,
+const u8 UART_TX = 6;
+const u8 UART_RX = 40;
 
-  I2C_INT_SCL = 8,
-  I2C_INT_SDA = 16,
-  SENSOR_DATA_READY = 25,
-  I2C_SCL = 26,
-  I2C_SDA = 32,
+const u8 I2C_INT_SCL = 8;
+const u8 I2C_INT_SDA = 16;
+const u8 SENSOR_DATA_READY = 25;
+const u8 I2C_SCL = 26;
+const u8 I2C_SDA = 32;
 
-  SPI_MOSI = 13,
-  SPI_MISO = 1,
-  SPI_SCK = 17,
+const u8 SPI_MOSI = 13;
+const u8 SPI_MISO = 1;
+const u8 SPI_SCK = 17;
 
-  ROW_1 = 21,
-  ROW_2 = 22,
-  ROW_3 = 15,
-  ROW_4 = 24,
-  ROW_5 = 19,
+const u8 ROW_1 = 21;
+const u8 ROW_2 = 22;
+const u8 ROW_3 = 15;
+const u8 ROW_4 = 24;
+const u8 ROW_5 = 19;
 
-  COL_1 = 28,
-  COL_2 = 11,
-  COL_3 = 31,
-  COL_4 = 37,
-  COL_5 = 30,
-};
+const u8 COL_1 = 28;
+const u8 COL_2 = 11;
+const u8 COL_3 = 31;
+const u8 COL_4 = 37;
+const u8 COL_5 = 30;
+} // namespace Pin
