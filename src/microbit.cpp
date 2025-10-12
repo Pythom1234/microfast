@@ -722,7 +722,7 @@ void wait(u64 us) {
   Peripheral::TIMER0->TASKS_STOP = 0x1;
 }
 u32 millis() {
-  return Peripheral::RTC2->COUNTER * 125.05f;
+  return Peripheral::RTC2->COUNTER * 125; // TODO: nepresne
 }
 u32 micros() {
   Peripheral::TIMER2->TASKS_CAPTURE[0] = 0x1;
