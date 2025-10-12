@@ -712,9 +712,17 @@ void tone(float freq, u64 duration, u8 volume) {
 ///////////////////////////////////////////////////////////////////////////////
 
 void wait(u64 us) {
+  Peripheral::TIMER0->BITMODE = 0x3;
+  Peripheral::TIMER0->CC[0] = us;
+  Peripheral::TIMER0->EVENTS_COMPARE[0] = 0x0;
+  Peripheral::TIMER0->TASKS_CLEAR = 0x1;
+  Peripheral::TIMER0->TASKS_START = 0x1;
+  while (!Peripheral::TIMER0->EVENTS_COMPARE[0])
+    ;
+  Peripheral::TIMER0->TASKS_STOP = 0x1;
 }
 u32 millis() {
-  return Peripheral::RTC2->COUNTER * 125;
+  return Peripheral::RTC2->COUNTER * 125; // TODO: neni uplne presne
 }
 u32 micros() {
   Peripheral::TIMER2->TASKS_CAPTURE[0] = 0x1;
