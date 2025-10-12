@@ -142,13 +142,92 @@ public:
       return;
     memcpy(data, c, len + 1);
   }
-  string(i8 c, u32 radix = 10) : string((i64)c, radix) {};
-  string(i16 c, u32 radix = 10) : string((i64)c, radix) {};
-  string(i32 c, u32 radix = 10) : string((i64)c, radix) {};
-  string(u8 c, u32 radix = 10) : string((u64)c, radix) {};
-  string(u16 c, u32 radix = 10) : string((u64)c, radix) {};
-  string(u32 c, u32 radix = 10) : string((u64)c, radix) {};
-  string(ptr c, u32 radix = 10) : string((u64)c, radix) {};
+  string(i8 c, u32 radix = 10) : string((i32)c, radix) {};
+  string(i16 c, u32 radix = 10) : string((i32)c, radix) {};
+  string(u8 c, u32 radix = 10) : string((u32)c, radix) {};
+  string(u16 c, u32 radix = 10) : string((u32)c, radix) {};
+  string(ptr c, u32 radix = 10) : string((u32)c, radix) {};
+  string(i32 c, u32 radix = 10) {
+    if (radix > 36 || radix < 2) {
+      len = 0;
+      data = (char*)calloc(cap, sizeof(char));
+      if (data == nullptr)
+        return;
+      data[0] = '\0';
+      return;
+    }
+    char buffer[32];
+    int i = 0;
+    bool negative = false;
+    if (c == 0) {
+      len = 1;
+      data = (char*)calloc(cap, sizeof(char));
+      if (data == nullptr)
+        return;
+      data[0] = '0';
+      return;
+    }
+    if (c < 0) {
+      negative = true;
+    }
+    u64 n = negative ? (u64)(-(c + 1)) + 1 : (u64)c;
+    while (n != 0) {
+      u32 digit = (n % radix);
+      buffer[i++] = digit < 10 ? '0' + digit : 'a' + digit - 10;
+      n /= radix;
+    }
+    if (negative) {
+      buffer[i++] = '-';
+    }
+    len = i;
+    while (cap <= len)
+      cap *= 2;
+    data = (char*)calloc(cap, sizeof(char));
+    if (data == nullptr)
+      return;
+    int j = 0;
+    while (i > 0) {
+      data[j++] = buffer[--i];
+    }
+    data[len] = '\0';
+  };
+  string(u32 c, u32 radix = 10) {
+    if (radix > 36 || radix < 2) {
+      len = 0;
+      data = (char*)calloc(cap, sizeof(char));
+      if (data == nullptr)
+        return;
+      data[0] = '\0';
+      return;
+    }
+    char buffer[32];
+    int i = 0;
+    if (c == 0) {
+      len = 1;
+      data = (char*)calloc(cap, sizeof(char));
+      if (data == nullptr)
+        return;
+      data[0] = '0';
+      return;
+    }
+    u64 n = c;
+    while (n != 0) {
+      u32 digit = (n % radix);
+      buffer[i++] = digit < 10 ? '0' + digit : 'a' + digit - 10;
+      n /= radix;
+    }
+    len = i;
+    while (cap <= len)
+      cap *= 2;
+    data = (char*)calloc(cap, sizeof(char));
+    if (data == nullptr)
+      return;
+    int j = 0;
+    while (i > 0) {
+      data[j++] = buffer[--i];
+    }
+    data[len] = '\0';
+  };
   string(i64 c, u32 radix = 10) {
     if (radix > 36 || radix < 2) {
       len = 0;
