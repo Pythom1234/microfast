@@ -226,11 +226,11 @@ int main() {
   radio::init();
   u8* t = (u8*)calloc(32, 1);
   while (1) {
-    if (!pins::getDigital(BUTTON_A)) {
+    if (!pins::getDigital(Pin::BUTTON_A)) {
       t[0] = 'A';
       radio::send(t);
     }
-    if (!pins::getDigital(BUTTON_B)) {
+    if (!pins::getDigital(Pin::BUTTON_B)) {
       t[0] = 'B';
       radio::send(t);
     }

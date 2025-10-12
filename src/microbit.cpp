@@ -697,11 +697,11 @@ void tone(float freq, u64 duration, u8 volume) {
   u32 high_time = (period_us * volume) / 100;
   u32 low_time = period_us - high_time;
   while (duration--) {
-    pins::setDigital(SPEAKER, 1);
+    pins::setDigital(Pin::SPEAKER, 1);
     volatile u32 x = high_time * 6;
     while (x--)
       ;
-    pins::setDigital(SPEAKER, 0);
+    pins::setDigital(Pin::SPEAKER, 0);
     volatile u32 y = low_time * 6;
     while (y--)
       ;
