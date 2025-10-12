@@ -8,7 +8,7 @@ STDLIB := \
 -Ltoolchain/stdlib/lib/nano \
 -lgcc -lc -lg -lstdc++ -lnosys -lm
 CFLAGS := $(CPU_FLAGS) -nostdlib -nostdinc -nodefaultlibs -Oz -Iinc -nostartfiles \
--fno-exceptions -fno-rtti -fno-unwind-tables -fno-asynchronous-unwind-tables -fno-lto \
+-fno-exceptions -fno-rtti -fno-unwind-tables -fno-asynchronous-unwind-tables -flto \
 -ffunction-sections -fdata-sections -g0
 LDFLAGS := -Wl,-T,linker.ld -Wl,--gc-sections $(STDLIB)
 

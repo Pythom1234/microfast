@@ -21,6 +21,8 @@
 #include "peripheral.h"
 #include "types.h"
 
+#define STARTUP __attribute__((used, section(".startup")))
+
 static u32* sp;
 
 static void msg(const char* str) {
@@ -36,11 +38,6 @@ static void msg(const char* str) {
   }
   *(ptr*)Peripheral::UART->TASKS_STOPTX = 0x1;
   *(ptr*)Peripheral::UART->ENABLE = 0x0;
-}
-
-static void after_fault() {
-  while (1)
-    ;
 }
 
 static const char* itoa(u32 v) {
@@ -73,12 +70,27 @@ static void print_reg() {
   msg("\n\r");
 }
 
-void __init() {
-  // Peripheral::TIMER2
+extern "C" {
+__attribute__((weak)) void __afterfault() {
+  while (1)
+    ;
+}
+STARTUP void __init() {
+  Peripheral::CLOCK->EVENTS_HFCLKSTARTED = 0;
+  Peripheral::CLOCK->TASKS_HFCLKSTART = 1;
+  while (Peripheral::CLOCK->EVENTS_HFCLKSTARTED == 0)
+    ;
+  Peripheral::CLOCK->EVENTS_LFCLKSTARTED = 0;
+  Peripheral::CLOCK->TASKS_LFCLKSTART = 1;
+  while (Peripheral::CLOCK->EVENTS_LFCLKSTARTED == 0)
+    ;
+  Peripheral::TIMER2->BITMODE = 0x3;
+  Peripheral::TIMER2->TASKS_START = 0x1;
+  Peripheral::RTC2->PRESCALER = 0xFFF;
+  Peripheral::RTC2->TASKS_START = 0x1;
 }
 
-extern "C" {
-__attribute__((used, section(".faults"))) void __nmi() {
+STARTUP void __nmi() {
   asm volatile("tst lr, #4\n"
                "ite eq\n"
                "mrseq %0, msp\n"
@@ -87,9 +99,9 @@ __attribute__((used, section(".faults"))) void __nmi() {
   msg("\n\r------\n\r\033[1;34;4mNonMaskableInterrupt\033[0m\n\r");
   print_reg();
   msg("------\n\r\n\r");
-  after_fault();
+  __afterfault();
 }
-__attribute__((used, section(".faults"))) void __hardfault() {
+STARTUP void __hardfault() {
   asm volatile("tst lr, #4\n"
                "ite eq\n"
                "mrseq %0, msp\n"
@@ -102,9 +114,9 @@ __attribute__((used, section(".faults"))) void __hardfault() {
     msg("\033[1;31mHardFault\033[0m: Bus error on a vector read\n\r");
   print_reg();
   msg("------\n\r\n\r");
-  after_fault();
+  __afterfault();
 }
-__attribute__((used, section(".faults"))) void __memfault() {
+STARTUP void __memfault() {
   asm volatile("tst lr, #4\n"
                "ite eq\n"
                "mrseq %0, msp\n"
@@ -134,9 +146,9 @@ __attribute__((used, section(".faults"))) void __memfault() {
         "on instruction access\n\r");
   print_reg();
   msg("------\n\r\n\r");
-  after_fault();
+  __afterfault();
 }
-__attribute__((used, section(".faults"))) void __busfault() {
+STARTUP void __busfault() {
   asm volatile("tst lr, #4\n"
                "ite eq\n"
                "mrseq %0, msp\n"
@@ -167,9 +179,9 @@ __attribute__((used, section(".faults"))) void __busfault() {
         "prefetch\n\r");
   print_reg();
   msg("------\n\r\n\r");
-  after_fault();
+  __afterfault();
 }
-__attribute__((used, section(".faults"))) void __usagefault() {
+STARTUP void __usagefault() {
   asm volatile("tst lr, #4\n"
                "ite eq\n"
                "mrseq %0, msp\n"
@@ -192,6 +204,6 @@ __attribute__((used, section(".faults"))) void __usagefault() {
     msg("\033[1;33mUsageFault\033[0m: Undefined instruction\n\r");
   print_reg();
   msg("------\n\r\n\r");
-  after_fault();
+  __afterfault();
 }
 }

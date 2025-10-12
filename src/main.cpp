@@ -221,6 +221,8 @@ int main() {
   // }
   // microbit::sensors::calibrateCompass();
   // u16 x = 20;
+  while (1)
+    print(((string)micros()) + " " + (string)(millis() * 1000));
   radio::init();
   u8* t = (u8*)calloc(32, 1);
   while (1) {

@@ -17,6 +17,7 @@
  * License along with this library; if not, see
  * <http://www.gnu.org/licenses/>.
  */
+
 MEMORY
 {
     FLASH (rx) : ORIGIN = 0x00000000, LENGTH = 512K
@@ -32,7 +33,7 @@ SECTIONS
     .text : ALIGN(4)
     {
         KEEP(*(.vectors))
-        KEEP(*(.faults)) // Fault handlers must be in a separate section due to compiler optimizations.
+        KEEP(*(.startup))
         *(.text*)
         *(.rodata*)
         . = ALIGN(4);
@@ -55,9 +56,6 @@ SECTIONS
         . = ALIGN(4);
     } > RAM
     end = .;
-    __exidx_start = .;
-    __exidx_end = .;
-    _fini = .;
 
 
     /DISCARD/ :

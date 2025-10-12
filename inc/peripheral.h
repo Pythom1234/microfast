@@ -178,6 +178,30 @@ typedef struct {
 
 typedef struct {
   ptr TASKS_START;
+  ptr TASKS_STOP;
+  ptr TASKS_CLEAR;
+  ptr TASKS_TRIGOVRFLW;
+  ptr RESERVED0[60];
+  ptr EVENTS_TICK;
+  ptr EVENTS_OVRFLW;
+  ptr RESERVED1[14];
+  ptr EVENTS_COMPARE[4];
+  ptr RESERVED2[109];
+  ptr INTENSET;
+  ptr INTENCLR;
+  ptr RESERVED3[13];
+  ptr EVTEN;
+  ptr EVTENSET;
+  ptr EVTENCLR;
+  ptr RESERVED4[110];
+  ptr COUNTER;
+  ptr PRESCALER;
+  ptr RESERVED5[13];
+  ptr CC[4];
+} RTC_Type;
+
+typedef struct {
+  ptr TASKS_START;
   ptr TASKS_SAMPLE;
   ptr TASKS_STOP;
   ptr TASKS_CALIBRATEOFFSET;
@@ -545,14 +569,14 @@ UART_Type* const UART = (UART_Type*)0x40002000;
 UARTE_Type* const UARTE0 = (UARTE_Type*)0x40002000;
 UARTE_Type* const UARTE1 = (UARTE_Type*)0x40028000;
 RNG_Type* const RNG = (RNG_Type*)0x4000D000;
-TIMER_Type* const TIMER0 =
-    (TIMER_Type*)0x40008000; // timer for `wait` functions TODO!
-TIMER_Type* const TIMER1 =
-    (TIMER_Type*)0x40009000; // timer for internal functions use
-TIMER_Type* const TIMER2 =
-    (TIMER_Type*)0x4000A000; // timer for all time from start TODO!
+TIMER_Type* const TIMER0 = (TIMER_Type*)0x40008000; // for `wait` function TODO!
+TIMER_Type* const TIMER1 = (TIMER_Type*)0x40009000; // for internal functions
+TIMER_Type* const TIMER2 = (TIMER_Type*)0x4000A000; // for `micros` functionTODO
 TIMER_Type* const TIMER3 = (TIMER_Type*)0x4001A000;
 TIMER_Type* const TIMER4 = (TIMER_Type*)0x4001B000;
+RTC_Type* const RTC0 = (RTC_Type*)0x4000B000;
+RTC_Type* const RTC1 = (RTC_Type*)0x40011000;
+RTC_Type* const RTC2 = (RTC_Type*)0x40024000; // for `millis` function TODO!
 CLOCK_Type* const CLOCK = (CLOCK_Type*)0x40000000;
 SAADC_Type* const SAADC = (SAADC_Type*)0x40007000;
 PWM_Type* const PWM0 = (PWM_Type*)0x4001C000;
@@ -569,6 +593,7 @@ RADIO_Type* const RADIO = (RADIO_Type*)0x40001000;
 GPIO_Type* const P[2] = {P0, P1};
 UARTE_Type* const UARTE[2] = {UARTE0, UARTE1};
 TIMER_Type* const TIMER[5] = {TIMER0, TIMER1, TIMER2, TIMER3, TIMER4};
+RTC_Type* const RTC[3] = {RTC0, RTC1, RTC2};
 PWM_Type* const PWM[4] = {PWM0, PWM1, PWM2, PWM3};
 TWIM_Type* const TWIM[2] = {TWIM0, TWIM1};
 TWI_Type* const TWI[2] = {TWI0, TWI1};

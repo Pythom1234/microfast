@@ -31,8 +31,60 @@
 .word __memfault
 .word __busfault
 .word __usagefault
+.word 0
+.word 0
+.word 0
+.word 0
+.word __svcall
+.word 0
+.word 0
+.word __pendsv
+.word __systick
 
-.section .text
+// Interrupts
+.word __power_clock
+.word __radio
+.word __uarte0_uart0
+.word __spim0_spis0_twim0_twis0_spi0_twi0
+.word __spim1_spis1_twim1_twis1_spi1_twi1
+.word __nfct
+.word __gpiote
+.word __saadc
+.word __timer0
+.word __timer1
+.word __timer2
+.word __rtc0
+.word __temp
+.word __rng
+.word __ecb
+.word __ccm_aar
+.word __wdt
+.word __rtc1
+.word __qdec
+.word __comp_lpcomp
+.word __swi0_egu0
+.word __swi1_egu1
+.word __swi2_egu2
+.word __swi3_egu3
+.word __swi4_egu4
+.word __swi5_egu5
+.word __timer3
+.word __timer4
+.word __pwm0
+.word __pdm
+.word __mwu
+.word __pwm1
+.word __pwm2
+.word __spim2_spis2_spi2
+.word __rtc2
+.word __i2s
+.word __fpu
+.word __usbd
+.word __uarte1
+.word __pwm3
+.word __spim3
+
+.section .startup, "ax"
 
 .thumb_func
 __reset:

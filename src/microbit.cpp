@@ -413,10 +413,6 @@ u8 readByte(u8 address) {
 
 namespace radio {
 void init() {
-  Peripheral::CLOCK->EVENTS_HFCLKSTARTED = 0;
-  Peripheral::CLOCK->TASKS_HFCLKSTART = 1;
-  while (Peripheral::CLOCK->EVENTS_HFCLKSTARTED == 0)
-    ;
   Peripheral::RADIO->TXPOWER = 0x0;
   Peripheral::RADIO->FREQUENCY = 0x7;
   Peripheral::RADIO->MODE = 0x0;
@@ -716,7 +712,13 @@ void tone(float freq, u64 duration, u8 volume) {
 ///////////////////////////////////////////////////////////////////////////////
 
 void wait(u64 us) {
-
+}
+u32 millis() {
+  return Peripheral::RTC2->COUNTER * 125;
+}
+u32 micros() {
+  Peripheral::TIMER2->TASKS_CAPTURE[0] = 0x1;
+  return Peripheral::TIMER2->CC[0];
 }
 
 u8 rnd() {
