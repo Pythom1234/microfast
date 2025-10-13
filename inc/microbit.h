@@ -115,6 +115,8 @@ struct vec {
   i32 y;
   i32 z;
 };
+bool buttonA();
+bool buttonB();
 i16 microphone();
 float temperature();
 vec accelerometer();
@@ -128,6 +130,7 @@ void calibrateCompass();
 namespace display {
 void setPixel(u8 x, u8 y, bool val);
 void clear();
+void drawImage(u32 img);
 void drawImage(string img);
 } // namespace display
 

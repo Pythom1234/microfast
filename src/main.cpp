@@ -223,13 +223,31 @@ int main() {
   // u16 x = 20;
   // radio::init();
   // u8* t = (u8*)calloc(32, 1);
-  u8 i = 1;
+  i8 i = 1;
+  bool ap = false;
+  bool bp = false;
   while (1) {
-    for (u32 x = 0; x < (pins::getDigital(Pin::BUTTON_A) ? 100 : 5); x++)
+    if (sensors::buttonA()) {
+      if (!ap)
+        i--;
+      // ap = true;
+    } else {
+      ap = false;
+    }
+    if (sensors::buttonB()) {
+      if (!bp)
+        i++;
+      // bp = true;
+    } else {
+      bp = false;
+    }
+    for (u32 x = 0; x < 1; x++)
       display::drawImage((string)i);
-    i++;
+    // i++;
     if (i == 25)
       i = 1;
+    if (i == 0)
+      i = 24;
     // if (!pins::getDigital(Pin::BUTTON_A)) {
     //   t[0] = 'A';
     //   radio::send(t);
