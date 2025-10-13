@@ -33,21 +33,21 @@ typedef unsigned int u32;
 typedef signed long long int i64;
 typedef unsigned long long int u64;
 
-typedef volatile unsigned long int ptr;
+typedef volatile unsigned long int* ptr;
 
 static void msga(const char* str) { // TODO: remove (debug)
-  *(ptr*)0x40002500 = 0x4;
-  *(ptr*)0x40002524 = 0x01D7E000;
-  *(ptr*)0x4000250C = 0x00000006;
-  *(ptr*)0x40002008 = 0x1;
+  *(ptr)0x40002500 = 0x4;
+  *(ptr)0x40002524 = 0x01D7E000;
+  *(ptr)0x4000250C = 0x00000006;
+  *(ptr)0x40002008 = 0x1;
   for (int i = 0; str[i] != '\0'; i++) {
-    *(ptr*)0x4000211C = 0x0;
-    *(ptr*)0x4000251C = str[i];
-    while (!*(ptr*)0x4000211C)
+    *(ptr)0x4000211C = 0x0;
+    *(ptr)0x4000251C = str[i];
+    while (!*(ptr)0x4000211C)
       ;
   }
-  *(ptr*)0x4000200C = 0x1;
-  *(ptr*)0x40002500 = 0x0;
+  *(ptr)0x4000200C = 0x1;
+  *(ptr)0x40002500 = 0x0;
 }
 
 template <u32 SIZE>

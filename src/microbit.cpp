@@ -25,18 +25,18 @@
 #include <cstring>
 
 static void msg(const char* str) { // TODO: remove (debug)
-  *(ptr*)0x40002500 = 0x4;
-  *(ptr*)0x40002524 = 0x01D7E000;
-  *(ptr*)0x4000250C = 0x00000006;
-  *(ptr*)0x40002008 = 0x1;
+  *(ptr)0x40002500 = 0x4;
+  *(ptr)0x40002524 = 0x01D7E000;
+  *(ptr)0x4000250C = 0x00000006;
+  *(ptr)0x40002008 = 0x1;
   for (int i = 0; str[i] != '\0'; i++) {
-    *(ptr*)0x4000211C = 0x0;
-    *(ptr*)0x4000251C = str[i];
-    while (!*(ptr*)0x4000211C)
+    *(ptr)0x4000211C = 0x0;
+    *(ptr)0x4000251C = str[i];
+    while (!*(ptr)0x4000211C)
       ;
   }
-  *(ptr*)0x4000200C = 0x1;
-  *(ptr*)0x40002500 = 0x0;
+  *(ptr)0x4000200C = 0x1;
+  *(ptr)0x40002500 = 0x0;
 }
 
 namespace microbit {
@@ -138,7 +138,7 @@ void write(const char* data, u16 size) {
   char buf[size]; // TODO: vyresit: new/malloc/static/char[]
   memcpy(buf, data, size);
   Peripheral::UARTE1->TXD.MAXCNT = size;
-  Peripheral::UARTE1->TXD.PTR = (ptr)buf;
+  Peripheral::UARTE1->TXD.PTR = (u32)buf;
   Peripheral::UARTE1->EVENTS_ENDTX = 0x0;
   Peripheral::UARTE1->EVENTS_TXSTARTED = 0x0;
   Peripheral::UARTE1->TASKS_STARTTX = 0x1;
@@ -155,7 +155,7 @@ void write(const char* data, u16 size) {
 char* read(u16 size, u32 timeout) {
   char* buf = (char*)malloc(size); // TODO: vyresit: new/malloc/static/char[]
   Peripheral::UARTE1->RXD.MAXCNT = size;
-  Peripheral::UARTE1->RXD.PTR = (ptr)buf;
+  Peripheral::UARTE1->RXD.PTR = (u32)buf;
   Peripheral::UARTE1->EVENTS_ENDRX = 0x0;
   Peripheral::UARTE1->EVENTS_RXSTARTED = 0x0;
   Peripheral::UARTE1->TASKS_STARTRX = 0x1;
@@ -249,7 +249,7 @@ void setAnalog(u8 pin, u16 value, u32 period) {
   Peripheral::PWM[i]->COUNTERTOP = countertop;
   Peripheral::PWM[i]->PRESCALER = prescaler;
   Peripheral::PWM[i]->LOOP = 0x0;
-  Peripheral::PWM[i]->SEQ[0].PTR = (ptr)&seq;
+  Peripheral::PWM[i]->SEQ[0].PTR = (u32)&seq;
   Peripheral::PWM[i]->SEQ[0].CNT = 0x1;
   Peripheral::PWM[i]->PSEL.OUT[0] = pin;
   Peripheral::PWM[i]->EVENTS_SEQEND[0] = 0x0;
@@ -300,7 +300,7 @@ u16 getAnalog(u8 pin) {
       ;
   }
   Peripheral::SAADC->CH[0].PSELP = p;
-  Peripheral::SAADC->RESULT.PTR = (ptr)&value;
+  Peripheral::SAADC->RESULT.PTR = (u32)&value;
   Peripheral::SAADC->RESULT.MAXCNT = 0x1;
   Peripheral::SAADC->EVENTS_STARTED = 0x0;
   Peripheral::SAADC->TASKS_START = 0x1;
@@ -335,7 +335,7 @@ void init(u8 scl, u8 sda) {
 void writeBuffer(u8 address, const u8* data, u16 size) {
   u8 buf[size]; // TODO: vyresit: new/malloc/static/char[]
   memcpy(buf, data, size);
-  Peripheral::TWIM0->TXD.PTR = (ptr)buf;
+  Peripheral::TWIM0->TXD.PTR = (u32)buf;
   Peripheral::TWIM0->TXD.MAXCNT = size;
   Peripheral::TWIM0->ADDRESS = address;
   Peripheral::TWIM0->EVENTS_LASTTX = 0x0;
@@ -353,7 +353,7 @@ void writeBuffer(u8 address, const u8* data, u16 size) {
 }
 void writeByte(u8 address, u8 byte) {
   volatile u8 val = byte;
-  Peripheral::TWIM0->TXD.PTR = (ptr)&val;
+  Peripheral::TWIM0->TXD.PTR = (u32)&val;
   Peripheral::TWIM0->TXD.MAXCNT = 0x1;
   Peripheral::TWIM0->ADDRESS = address;
   Peripheral::TWIM0->EVENTS_LASTTX = 0x0;
@@ -371,7 +371,7 @@ void writeByte(u8 address, u8 byte) {
 }
 u8* readBuffer(u8 address, u16 size) {
   u8* buf = (u8*)malloc(size); // TODO: vyresit: new/malloc/static/char[]
-  Peripheral::TWIM0->RXD.PTR = (ptr)buf;
+  Peripheral::TWIM0->RXD.PTR = (u32)buf;
   Peripheral::TWIM0->RXD.MAXCNT = size;
   Peripheral::TWIM0->ADDRESS = address;
   Peripheral::TWIM0->EVENTS_RXSTARTED = 0x0;
@@ -390,7 +390,7 @@ u8* readBuffer(u8 address, u16 size) {
 }
 u8 readByte(u8 address) {
   volatile u8 val = 0;
-  Peripheral::TWIM0->RXD.PTR = (ptr)&val;
+  Peripheral::TWIM0->RXD.PTR = (u32)&val;
   Peripheral::TWIM0->RXD.MAXCNT = 0x1;
   Peripheral::TWIM0->ADDRESS = address;
   Peripheral::TWIM0->EVENTS_RXSTARTED = 0x0;
@@ -431,7 +431,7 @@ void init() {
   Peripheral::RADIO->SHORTS = 0x10;
 }
 void send(u8* packet) {
-  Peripheral::RADIO->PACKETPTR = (ptr)packet;
+  Peripheral::RADIO->PACKETPTR = (u32)packet;
   Peripheral::RADIO->EVENTS_READY = 0x0;
   Peripheral::RADIO->TASKS_TXEN = 0x1;
   while (!Peripheral::RADIO->EVENTS_READY)
@@ -447,7 +447,7 @@ void send(u8* packet) {
 }
 u8* recieve(u32 timeout) {
   u8* buf = (u8*)malloc(32); // TODO: free
-  Peripheral::RADIO->PACKETPTR = (ptr)buf;
+  Peripheral::RADIO->PACKETPTR = (u32)buf;
   Peripheral::RADIO->EVENTS_READY = 0x0;
   Peripheral::RADIO->TASKS_RXEN = 0x1;
   while (!Peripheral::RADIO->EVENTS_READY)
@@ -526,7 +526,7 @@ i16 microphone() {
       ;
   }
   Peripheral::SAADC->CH[0].PSELP = 0x4;
-  Peripheral::SAADC->RESULT.PTR = (ptr)&value;
+  Peripheral::SAADC->RESULT.PTR = (u32)&value;
   Peripheral::SAADC->RESULT.MAXCNT = 0x1;
   Peripheral::SAADC->EVENTS_STARTED = 0x0;
   Peripheral::SAADC->TASKS_START = 0x1;
@@ -555,7 +555,7 @@ float temperature() {
 }
 void writeReg(u8 reg, u8 val) {
   volatile u8 buf[2] = {reg, val};
-  Peripheral::TWIM1->TXD.PTR = (ptr)buf;
+  Peripheral::TWIM1->TXD.PTR = (u32)buf;
   Peripheral::TWIM1->TXD.MAXCNT = 0x2;
   Peripheral::TWIM1->EVENTS_TXSTARTED = 0x0;
   Peripheral::TWIM1->EVENTS_LASTTX = 0x0;
@@ -573,9 +573,9 @@ void writeReg(u8 reg, u8 val) {
 u8 readReg(u8 reg) {
   volatile u8 buf = reg;
   volatile u8 val = 0;
-  Peripheral::TWIM1->TXD.PTR = (ptr)&buf;
+  Peripheral::TWIM1->TXD.PTR = (u32)&buf;
   Peripheral::TWIM1->TXD.MAXCNT = 0x1;
-  Peripheral::TWIM1->RXD.PTR = (ptr)&val;
+  Peripheral::TWIM1->RXD.PTR = (u32)&val;
   Peripheral::TWIM1->RXD.MAXCNT = 0x1;
   Peripheral::TWIM1->EVENTS_TXSTARTED = 0x0;
   Peripheral::TWIM1->EVENTS_RXSTARTED = 0x0;

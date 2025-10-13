@@ -107,9 +107,9 @@ IRQ void __hardfault() {
                "mrsne %0, psp\n"
                : "=r"(sp));
   msg("\n\r------\n\r\033[1;31;4mHardFault\033[0m\n\r");
-  if (*(ptr*)0xE000ED2C & 1 << 30)
+  if (*(ptr)0xE000ED2C & 1 << 30)
     msg("\033[1;31mHardFault\033[0m: Fault escalated to a hard fault\n\r");
-  if (*(ptr*)0xE000ED2C & 1 << 1)
+  if (*(ptr)0xE000ED2C & 1 << 1)
     msg("\033[1;31mHardFault\033[0m: Bus error on a vector read\n\r");
   print_reg();
   msg("------\n\r\n\r");
@@ -122,25 +122,25 @@ IRQ void __memfault() {
                "mrsne %0, psp\n"
                : "=r"(sp));
   msg("\n\r------\n\r\033[1;35;4mMemManageFault\033[0m\n\r");
-  if (*(ptr*)0xE000ED28 & 1 << 7) {
-    u32 v = *(ptr*)0xE000ED34;
+  if (*(ptr)0xE000ED28 & 1 << 7) {
+    u32 v = *(ptr)0xE000ED34;
     msg("\033[1;35mMemManageFault\033[0m: at address 0x");
     msg(itoa(v));
     msg("\n\r");
   }
-  if (*(ptr*)0xE000ED28 & 1 << 5)
+  if (*(ptr)0xE000ED28 & 1 << 5)
     msg("\033[1;35mMemManageFault\033[0m: MPU or default memory map mismatch "
         "during lazy floating-point state preservation\n\r");
-  if (*(ptr*)0xE000ED28 & 1 << 4)
+  if (*(ptr)0xE000ED28 & 1 << 4)
     msg("\033[1;35mMemManageFault\033[0m: MPU or default memory map mismatch "
         "during exception stacking\n\r");
-  if (*(ptr*)0xE000ED28 & 1 << 3)
+  if (*(ptr)0xE000ED28 & 1 << 3)
     msg("\033[1;35mMemManageFault\033[0m: MPU or default memory map mismatch "
         "during exception unstacking\n\r");
-  if (*(ptr*)0xE000ED28 & 1 << 1)
+  if (*(ptr)0xE000ED28 & 1 << 1)
     msg("\033[1;35mMemManageFault\033[0m: MPU or default memory map mismatch "
         "on data access\n\r");
-  if (*(ptr*)0xE000ED28 & 1 << 0)
+  if (*(ptr)0xE000ED28 & 1 << 0)
     msg("\033[1;35mMemManageFault\033[0m: MPU or default memory map mismatch "
         "on instruction access\n\r");
   print_reg();
@@ -154,26 +154,26 @@ IRQ void __busfault() {
                "mrsne %0, psp\n"
                : "=r"(sp));
   msg("\n\r------\n\r\033[1;36;4mBusFault\033[0m\n\r");
-  if (*(ptr*)0xE000ED29 & 1 << 7) {
-    u32 v = *(ptr*)0xE000ED38;
+  if (*(ptr)0xE000ED29 & 1 << 7) {
+    u32 v = *(ptr)0xE000ED38;
     msg("\033[1;36mBusFault\033[0m: At address 0x");
     msg(itoa(v));
     msg("\n\r");
   }
-  if (*(ptr*)0xE000ED29 & 1 << 5)
+  if (*(ptr)0xE000ED29 & 1 << 5)
     msg("\033[1;36mBusFault\033[0m: Bus error during lazy floating-point "
         "state "
         "preservation\n\r");
-  if (*(ptr*)0xE000ED29 & 1 << 4)
+  if (*(ptr)0xE000ED29 & 1 << 4)
     msg("\033[1;36mBusFault\033[0m: Bus error during exception stacking\n\r");
-  if (*(ptr*)0xE000ED29 & 1 << 3)
+  if (*(ptr)0xE000ED29 & 1 << 3)
     msg("\033[1;36mMemManageFault\033[0m: Bus error during exception "
         "unstacking\n\r");
-  if (*(ptr*)0xE000ED29 & 1 << 2)
+  if (*(ptr)0xE000ED29 & 1 << 2)
     msg("\033[1;36mBusFault\033[0m: Imprecise data bus error\n\r");
-  if (*(ptr*)0xE000ED29 & 1 << 1)
+  if (*(ptr)0xE000ED29 & 1 << 1)
     msg("\033[1;36mBusFault\033[0m: Precise data bus error\n\r");
-  if (*(ptr*)0xE000ED29 & 1 << 0)
+  if (*(ptr)0xE000ED29 & 1 << 0)
     msg("\033[1;36mBusFault\033[0m: Bus error during instruction "
         "prefetch\n\r");
   print_reg();
@@ -187,19 +187,19 @@ IRQ void __usagefault() {
                "mrsne %0, psp\n"
                : "=r"(sp));
   msg("\n\r------\n\r\033[1;33;4mUsageFault\033[0m\n\r");
-  if (*(ptr*)0xE000ED2A & 1 << 9)
+  if (*(ptr)0xE000ED2A & 1 << 9)
     msg("\033[1;33mUsageFault\033[0m: Divide by 0\n\r");
-  if (*(ptr*)0xE000ED2A & 1 << 8)
+  if (*(ptr)0xE000ED2A & 1 << 8)
     msg("\033[1;33mUsageFault\033[0m: Illegal unaligned load or store\n\r");
-  if (*(ptr*)0xE000ED2A & 1 << 3)
+  if (*(ptr)0xE000ED2A & 1 << 3)
     msg("\033[1;33mUsageFault\033[0m: Attempt to access a coprocessor\n\r");
-  if (*(ptr*)0xE000ED2A & 1 << 2)
+  if (*(ptr)0xE000ED2A & 1 << 2)
     msg("\033[1;33mUsageFault\033[0m: Invalid EXC_RETURN value\n\r");
-  if (*(ptr*)0xE000ED2A & 1 << 1)
+  if (*(ptr)0xE000ED2A & 1 << 1)
     msg("\033[1;33mUsageFault\033[0m: Attempt to enter an invalid "
         "instruction "
         "set state\n\r");
-  if (*(ptr*)0xE000ED2A & 1 << 0)
+  if (*(ptr)0xE000ED2A & 1 << 0)
     msg("\033[1;33mUsageFault\033[0m: Undefined instruction\n\r");
   print_reg();
   msg("------\n\r\n\r");
