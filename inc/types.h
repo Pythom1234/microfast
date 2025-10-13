@@ -22,6 +22,8 @@
 #include <cstdlib>
 #include <cstring>
 
+#define IRQ __attribute__((used, section(".irq")))
+
 typedef signed char i8;
 typedef unsigned char u8;
 typedef signed short i16;

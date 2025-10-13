@@ -21,23 +21,21 @@
 #include "peripheral.h"
 #include "types.h"
 
-#define STARTUP __attribute__((used, section(".startup")))
-
 static u32* sp;
 
 static void msg(const char* str) {
-  *(ptr*)Peripheral::UART->ENABLE = 0x4;
-  *(ptr*)Peripheral::UART->BAUDRATE = 0x01D7E000;
-  *(ptr*)Peripheral::UART->PSEL.TXD = 0x00000006;
-  *(ptr*)Peripheral::UART->TASKS_STARTTX = 0x1;
+  Peripheral::UART->ENABLE = 0x4;
+  Peripheral::UART->BAUDRATE = 0x01D7E000;
+  Peripheral::UART->PSEL.TXD = 0x00000006;
+  Peripheral::UART->TASKS_STARTTX = 0x1;
   for (int i = 0; str[i] != '\0'; i++) {
-    *(ptr*)Peripheral::UART->EVENTS_TXDRDY = 0x0;
-    *(ptr*)Peripheral::UART->TXD = str[i];
-    while (!*(ptr*)Peripheral::UART->EVENTS_TXDRDY)
+    Peripheral::UART->EVENTS_TXDRDY = 0x0;
+    Peripheral::UART->TXD = str[i];
+    while (!Peripheral::UART->EVENTS_TXDRDY)
       ;
   }
-  *(ptr*)Peripheral::UART->TASKS_STOPTX = 0x1;
-  *(ptr*)Peripheral::UART->ENABLE = 0x0;
+  Peripheral::UART->TASKS_STOPTX = 0x1;
+  Peripheral::UART->ENABLE = 0x0;
 }
 
 static const char* itoa(u32 v) {
@@ -75,7 +73,8 @@ __attribute__((weak)) void __afterfault() {
   while (1)
     ;
 }
-STARTUP void __init() {
+IRQ void __init() {
+  msg("start\n\r");
   Peripheral::CLOCK->EVENTS_HFCLKSTARTED = 0;
   Peripheral::CLOCK->TASKS_HFCLKSTART = 1;
   while (Peripheral::CLOCK->EVENTS_HFCLKSTARTED == 0)
@@ -90,7 +89,7 @@ STARTUP void __init() {
   Peripheral::RTC2->TASKS_START = 0x1;
 }
 
-STARTUP void __nmi() {
+IRQ void __nmi() {
   asm volatile("tst lr, #4\n"
                "ite eq\n"
                "mrseq %0, msp\n"
@@ -101,7 +100,7 @@ STARTUP void __nmi() {
   msg("------\n\r\n\r");
   __afterfault();
 }
-STARTUP void __hardfault() {
+IRQ void __hardfault() {
   asm volatile("tst lr, #4\n"
                "ite eq\n"
                "mrseq %0, msp\n"
@@ -116,7 +115,7 @@ STARTUP void __hardfault() {
   msg("------\n\r\n\r");
   __afterfault();
 }
-STARTUP void __memfault() {
+IRQ void __memfault() {
   asm volatile("tst lr, #4\n"
                "ite eq\n"
                "mrseq %0, msp\n"
@@ -148,7 +147,7 @@ STARTUP void __memfault() {
   msg("------\n\r\n\r");
   __afterfault();
 }
-STARTUP void __busfault() {
+IRQ void __busfault() {
   asm volatile("tst lr, #4\n"
                "ite eq\n"
                "mrseq %0, msp\n"
@@ -181,7 +180,7 @@ STARTUP void __busfault() {
   msg("------\n\r\n\r");
   __afterfault();
 }
-STARTUP void __usagefault() {
+IRQ void __usagefault() {
   asm volatile("tst lr, #4\n"
                "ite eq\n"
                "mrseq %0, msp\n"

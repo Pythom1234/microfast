@@ -121,7 +121,7 @@ i16 microphone();
 float temperature();
 vec accelerometer();
 vec magnetometer();
-/*
+/* TODO
 u32 compass();
 void calibrateCompass();
 */
@@ -132,6 +132,8 @@ void setPixel(u8 x, u8 y, bool val);
 void clear();
 void drawImage(u32 img);
 void drawImage(string img);
+// TODO: funkce, ktera bude kreslit obrazek i s intensity (dostane u32[5] s
+// hexadecimalni hodnotou)
 } // namespace display
 
 namespace sound {
@@ -140,6 +142,7 @@ void tone(float freq, u64 duration, u8 volume = 100);
 } // namespace sound
 
 void wait(u64 us);
+void runAfter(void (*func)(), u64 us);
 u32 millis();
 u32 micros();
 u8 rnd();

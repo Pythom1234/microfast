@@ -33,7 +33,7 @@ SECTIONS
     .text : ALIGN(4)
     {
         KEEP(*(.vectors))
-        KEEP(*(.startup))
+        KEEP(*(.irq))
         *(.text*)
         *(.rodata*)
         . = ALIGN(4);

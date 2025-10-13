@@ -223,9 +223,12 @@ int main() {
   // u16 x = 20;
   // radio::init();
   // u8* t = (u8*)calloc(32, 1);
+  print("hello");
+  print((string)sensors::temperature());
   i8 i = 1;
   bool ap = false;
   bool bp = false;
+  runAfter([]() { print("hello"); }, 1000);
   while (1) {
     if (sensors::buttonA()) {
       if (!ap)

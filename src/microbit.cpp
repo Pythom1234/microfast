@@ -549,7 +549,7 @@ float temperature() {
   Peripheral::TEMP->TASKS_START = 0x1;
   while (!Peripheral::TEMP->EVENTS_DATARDY)
     ;
-  float temp = ((i64)(i32)Peripheral::TEMP->TEMP) * 0.25f;
+  float temp = (Peripheral::TEMP->TEMP) * 0.25f;
   Peripheral::TEMP->TASKS_STOP = 0x1;
   return temp;
 }
@@ -727,19 +727,6 @@ void drawImage(u32 img) {
     }
   }
 }
-// void drawImage(u64 img) {
-//   for (u8 i = 0; i < 25; i++) {
-//     u32 intensity = img % 10;
-//     img /= 10;
-//     if (intensity) {
-//       setPixel(i % 5, i / 5, 1);
-//       wait(intensity * 100);
-//       setPixel(i % 5, i / 5, 0);
-//     } else {
-//       setPixel(i % 5, i / 5, 0);
-//     }
-//   }
-// }
 void drawImage(string img) {
   u32 image;
   if (img == "1")
@@ -847,17 +834,25 @@ void wait(u64 us) {
     ;
   Peripheral::TIMER0->TASKS_STOP = 0x1;
 }
-// void runAfter((void*)func, u64 us) { //TODO udelat udelat funkci, ktera
-// zavola po nejakem case jinou funkci pres IRQ
-//   Peripheral::TIMER0->BITMODE = 0x3;
-//   Peripheral::TIMER0->CC[0] = us;
-//   Peripheral::TIMER0->EVENTS_COMPARE[0] = 0x0;
-//   Peripheral::TIMER0->TASKS_CLEAR = 0x1;
-//   Peripheral::TIMER0->TASKS_START = 0x1;
-//   while (!Peripheral::TIMER0->EVENTS_COMPARE[0])
-//     ;
-//   Peripheral::TIMER0->TASKS_STOP = 0x1;
-// }
+
+static void (*timer4_callback)();
+
+extern "C" IRQ void __timer4_irq() {
+  print("test1");
+  Peripheral::TIMER4->TASKS_STOP = 0x1;
+  if (timer4_callback)
+    timer4_callback();
+};
+void runAfter(void (*func)(), u64 us) {
+  timer4_callback = func;
+  Peripheral::TIMER4->BITMODE = 0x3;
+  Peripheral::TIMER4->CC[0] = us;
+  Peripheral::TIMER4->EVENTS_COMPARE[0] = 0x0;
+  Peripheral::TIMER4->TASKS_CLEAR = 0x1;
+  Peripheral::TIMER4->INTENSET = 0x1;
+  Peripheral::TIMER4->TASKS_START = 0x1;
+  print("test");
+}
 u32 millis() {
   return Peripheral::RTC2->COUNTER * 125; // TODO: nepresne
 }
