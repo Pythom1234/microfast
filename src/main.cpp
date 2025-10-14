@@ -123,12 +123,18 @@ u8 read(u8 reg) {
   return microbit::i2c::readByte(0x39);
 }
 
+u32 i = 0;
+
+void l() {
+  microbit::display::drawImage((string)i);
+  microbit::runAfter(l, 100000);
+}
+
 int main() {
   microbit::uarte::setBaudrate(microbit::uarte::BaudRate::Baud115200);
-  // microbit::print("\033[2J\033[H"
-  //                 "\033[1;33m-----------------\033[0m\n\r\033[1;31mmicro:bit
-  //                 "
-  //                 "console\033[0m\n\r\033[1;33m-----------------\033[0m\n\r");
+  microbit::print("\033[2J\033[H"
+                  "\033[1;33m-----------------\033[0m\n\r\033[1;31mmicro:bit "
+                  "console\033[0m\n\r\033[1;33m-----------------\033[0m\n\r");
   // microbit::pins::setDigital(Pin::RUN_MIC, 1);
   // float i = 1753;
   // const Pin r[] = {Pin::ROW_1, Pin::ROW_2, Pin::ROW_3, Pin::ROW_4,
@@ -223,12 +229,14 @@ int main() {
   // u16 x = 20;
   // radio::init();
   // u8* t = (u8*)calloc(32, 1);
-  print("hello");
-  print((string)sensors::temperature());
-  i8 i = 1;
+  // i8 i = 1;
   bool ap = false;
   bool bp = false;
-  runAfter([]() { print("hello"); }, 1000);
+  l();
+  // runAfter([]() { print("1"); }, 1000000);
+  // wait(1000000);
+  // runAfter([]() { print("2"); }, 1000000);
+  // wait(1000000);
   while (1) {
     if (sensors::buttonA()) {
       if (!ap)
@@ -244,8 +252,6 @@ int main() {
     } else {
       bp = false;
     }
-    for (u32 x = 0; x < 1; x++)
-      display::drawImage((string)i);
     // i++;
     if (i == 25)
       i = 1;

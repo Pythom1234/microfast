@@ -838,20 +838,24 @@ void wait(u64 us) {
 static void (*timer4_callback)();
 
 extern "C" IRQ void __timer4_irq() {
-  print("test1");
+  Peripheral::TIMER4->EVENTS_COMPARE[0] = 0x0;
   Peripheral::TIMER4->TASKS_STOP = 0x1;
+  Peripheral::TIMER4->INTENSET = 0x0;
   if (timer4_callback)
     timer4_callback();
 };
 void runAfter(void (*func)(), u64 us) {
   timer4_callback = func;
+  // NOTE: jeste by to slo s NVIC_SetVector - pak by musela byt vectortable
+  // prekopirovana do ram, kde by slo nastavovat IRQ za behu
+  Peripheral::NVIC->ICPR[0] = 0x8000000;
+  Peripheral::NVIC->ISER[0] = 0x8000000;
   Peripheral::TIMER4->BITMODE = 0x3;
   Peripheral::TIMER4->CC[0] = us;
   Peripheral::TIMER4->EVENTS_COMPARE[0] = 0x0;
   Peripheral::TIMER4->TASKS_CLEAR = 0x1;
-  Peripheral::TIMER4->INTENSET = 0x1;
+  Peripheral::TIMER4->INTENSET = 0x10000;
   Peripheral::TIMER4->TASKS_START = 0x1;
-  print("test");
 }
 u32 millis() {
   return Peripheral::RTC2->COUNTER * 125; // TODO: nepresne

@@ -72,6 +72,8 @@
 .word __timer4_irq
 .word __pwm0_irq
 .word __pdm_irq
+.word 0
+.word 0
 .word __mwu_irq
 .word __pwm1_irq
 .word __pwm2_irq
@@ -81,7 +83,12 @@
 .word __fpu_irq
 .word __usbd_irq
 .word __uarte1_irq
+.word 0
+.word 0
+.word 0
+.word 0
 .word __pwm3_irq
+.word 0
 .word __spim3_irq
 
 .section .irq, "ax"

@@ -74,7 +74,6 @@ __attribute__((weak)) void __afterfault() {
     ;
 }
 IRQ void __init() {
-  msg("start\n\r");
   Peripheral::CLOCK->EVENTS_HFCLKSTARTED = 0;
   Peripheral::CLOCK->TASKS_HFCLKSTART = 1;
   while (Peripheral::CLOCK->EVENTS_HFCLKSTARTED == 0)
@@ -100,6 +99,7 @@ IRQ void __nmi() {
   msg("------\n\r\n\r");
   __afterfault();
 }
+// TODO: zmenit 0xE000ED2C atd. na Peripheral::...
 IRQ void __hardfault() {
   asm volatile("tst lr, #4\n"
                "ite eq\n"

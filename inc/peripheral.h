@@ -579,6 +579,30 @@ typedef volatile struct {
   u32 STIR;
 } NVIC_Type;
 
+typedef volatile struct {
+  u32 CPUID;
+  u32 ICSR;
+  u32 VTOR;
+  u32 AIRCR;
+  u32 SCR;
+  u32 CCR;
+  u8 SHP[12];
+  u32 SHCSR;
+  u32 CFSR;
+  u32 HFSR;
+  u32 DFSR;
+  u32 MMFAR;
+  u32 BFAR;
+  u32 AFSR;
+  u32 PFR[2];
+  u32 DFR;
+  u32 ADR;
+  u32 MMFR[4];
+  u32 ISAR[5];
+  u32 RESERVED0[5];
+  u32 CPACR;
+} SCB_Type;
+
 GPIO_Type* const P0 = (GPIO_Type*)0x50000000;
 GPIO_Type* const P1 = (GPIO_Type*)0x50000300;
 UART_Type* const UART = (UART_Type*)0x40002000;
@@ -615,6 +639,7 @@ TWIM_Type* const TWIM[2] = {TWIM0, TWIM1};
 TWI_Type* const TWI[2] = {TWI0, TWI1};
 
 NVIC_Type* const NVIC = (NVIC_Type*)0xE000E100;
+SCB_Type* const SCB = (SCB_Type*)0xE000ED00;
 
 } // namespace Peripheral
 
