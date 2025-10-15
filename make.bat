@@ -1,4 +1,4 @@
-@echo off
+
 mkdir build
 del /Q /F build\*
 
