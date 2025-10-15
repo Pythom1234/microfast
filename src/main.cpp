@@ -1,5 +1,4 @@
 #include "microbit.h"
-#include "peripheral.h"
 
 inline volatile void delay(volatile u32 cycles) {
   while (cycles--)
@@ -103,5 +102,11 @@ int main() {
                   "console\033[0m\n\r\033[1;33m-----------------\033[0m\n\r");
   using namespace microbit;
   while (1) {
+    sound::tone(C4, 100);
+    // pins::setDigital(Pin::SPEAKER, 1);
+    // wait(5);
+    // pins::setDigital(Pin::SPEAKER, 0);
+    // wait(5);
+    // display::drawImage("happy");
   }
 }

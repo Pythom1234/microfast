@@ -29,13 +29,13 @@ clean:
 	@set -e
 	rm -rf build/*
 
-# flash:
-# 	@set -e
-# 	pyocd flash build/main.hex
-
 flash:
 	@set -e
-	for id in $$(pyocd json | jq -r '.boards[].unique_id'); do \
-	    toolchain/bin/linux/pyocd flash build/main.hex --target nrf52 --uid $$id & \
-	wait; \
-	done; \
+	toolchain/bin/linux/pyocd flash build/main.bin
+
+# flash:
+# 	@set -e
+# 	for id in $$(toolchain/bin/linux/pyocd json | jq -r '.boards[].unique_id'); do \
+# 	    toolchain/bin/linux/pyocd flash build/main.hex --target nrf52 --uid $$id & \
+# 	wait; \
+# 	done; \

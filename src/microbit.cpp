@@ -804,20 +804,19 @@ void drawImage(string img) {
 ///////////////////////////////////////////////////////////////////////////////
 
 namespace sound {
-void tone(float freq, u64 duration, u8 volume) {
-  // TODO
-  u32 period_us = 1000000 / freq;
+void tone(float freq, u64 duration_ms, u8 volume) {
+  if (freq <= 0 || volume == 0)
+    return;
+
+  u32 period_us = (u32)(1000000.0f / freq);
   u32 high_time = (period_us * volume) / 100;
   u32 low_time = period_us - high_time;
-  while (duration--) {
+  u64 periods = (duration_ms * 1000) / period_us;
+  for (u64 i = 0; i < periods; i++) {
     pins::setDigital(Pin::SPEAKER, 1);
-    volatile u32 x = high_time * 6;
-    while (x--)
-      ;
+    wait(high_time);
     pins::setDigital(Pin::SPEAKER, 0);
-    volatile u32 y = low_time * 6;
-    while (y--)
-      ;
+    wait(low_time);
   }
 }
 } // namespace sound

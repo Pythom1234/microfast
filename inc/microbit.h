@@ -138,7 +138,7 @@ void drawImage(string img);
 
 namespace sound {
 using sensors::microphone;
-void tone(float freq, u64 duration, u8 volume = 100);
+void tone(float freq, u64 duration, u8 volume = 50);
 } // namespace sound
 
 void wait(u64 us);
