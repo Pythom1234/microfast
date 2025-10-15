@@ -12,7 +12,8 @@ toolchain\bin\windows\clang ^
  -Itoolchain\stdlib\include ^
  -Itoolchain\stdlib\inc ^
  -Ltoolchain\stdlib\lib\nano ^
- -lgcc -lc -lg -lstdc++ -lnosys -lm -o build\main.elf
+ -lgcc -lc -lg -lstdc++ -lnosys -lm -o build\main.elf ^
+ src\*
 
 if errorlevel 1 (
     exit /b 1
