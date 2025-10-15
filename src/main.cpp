@@ -127,7 +127,6 @@ u32 i = 0;
 
 void l() {
   microbit::display::drawImage((string)i);
-  microbit::runAfter(l, 100000);
 }
 
 int main() {
@@ -232,7 +231,7 @@ int main() {
   // i8 i = 1;
   bool ap = false;
   bool bp = false;
-  l();
+  runEvery(l, 2000);
   // runAfter([]() { print("1"); }, 1000000);
   // wait(1000000);
   // runAfter([]() { print("2"); }, 1000000);

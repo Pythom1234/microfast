@@ -835,19 +835,46 @@ void wait(u64 us) {
   Peripheral::TIMER0->TASKS_STOP = 0x1;
 }
 
+static void (*timer3_callback)();
+extern "C" IRQ void __timer3_irq() {
+  Peripheral::TIMER3->EVENTS_COMPARE[0] = 0x0;
+  Peripheral::TIMER3->TASKS_STOP = 0x1;
+  Peripheral::TIMER3->INTENCLR = 0x10000;
+  if (timer3_callback)
+    timer3_callback();
+};
+void runAfter(void (*func)(), u64 us) {
+  if (us == 0) {
+    Peripheral::TIMER3->INTENCLR = 0x10000;
+    Peripheral::TIMER3->TASKS_STOP = 0x1;
+    Peripheral::TIMER3->EVENTS_COMPARE[0] = 0x0;
+    timer3_callback = nullptr;
+  }
+  timer3_callback = func;
+  Peripheral::NVIC->ICPR[0] = 0x4000000;
+  Peripheral::NVIC->ISER[0] = 0x4000000;
+  Peripheral::TIMER3->BITMODE = 0x3;
+  Peripheral::TIMER3->CC[0] = us;
+  Peripheral::TIMER3->EVENTS_COMPARE[0] = 0x0;
+  Peripheral::TIMER3->TASKS_CLEAR = 0x1;
+  Peripheral::TIMER3->INTENSET = 0x10000;
+  Peripheral::TIMER3->TASKS_START = 0x1;
+}
 static void (*timer4_callback)();
-
 extern "C" IRQ void __timer4_irq() {
   Peripheral::TIMER4->EVENTS_COMPARE[0] = 0x0;
-  Peripheral::TIMER4->TASKS_STOP = 0x1;
-  Peripheral::TIMER4->INTENSET = 0x0;
+  Peripheral::TIMER4->TASKS_CLEAR = 0x1;
   if (timer4_callback)
     timer4_callback();
 };
-void runAfter(void (*func)(), u64 us) {
+void runEvery(void (*func)(), u64 us) {
+  if (us == 0) {
+    Peripheral::TIMER4->INTENCLR = 0x10000;
+    Peripheral::TIMER4->TASKS_STOP = 0x1;
+    Peripheral::TIMER4->EVENTS_COMPARE[0] = 0x0;
+    timer4_callback = nullptr;
+  }
   timer4_callback = func;
-  // NOTE: jeste by to slo s NVIC_SetVector - pak by musela byt vectortable
-  // prekopirovana do ram, kde by slo nastavovat IRQ za behu
   Peripheral::NVIC->ICPR[0] = 0x8000000;
   Peripheral::NVIC->ISER[0] = 0x8000000;
   Peripheral::TIMER4->BITMODE = 0x3;

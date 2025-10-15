@@ -143,6 +143,13 @@ void tone(float freq, u64 duration, u8 volume = 100);
 
 void wait(u64 us);
 void runAfter(void (*func)(), u64 us);
+void runEvery(void (*func)(), u64 us);
+inline void runAfter(u64 us) {
+  runAfter([]() {}, 0);
+}
+inline void runEvery(u64 us) {
+  runEvery([]() {}, 0);
+}
 u32 millis();
 u32 micros();
 u8 rnd();

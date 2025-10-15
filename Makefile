@@ -13,9 +13,6 @@ CFLAGS := $(CPU_FLAGS) -nostdlib -nostdinc -nodefaultlibs -Oz -Iinc -nostartfile
 LDFLAGS := -Wl,-T,linker.ld -Wl,--gc-sections $(STDLIB)
 
 SHELL := /bin/bash
-# PATH := toolchain/bin:$(PATH)
-PATH := toolchain/bin/linux
-LD_LIBRARY_PATH := toolchain/bin/linux
 
 .ONESHELL:
 
@@ -24,13 +21,13 @@ all: clean compile flash
 compile: $(SRCS)
 	@set -e
 	mkdir -p build
-	clang $(CFLAGS) $^ $(LDFLAGS) -o build/main.elf
-	llvm-objcopy -O ihex build/main.elf build/main.hex
-	llvm-objcopy -O binary build/main.elf build/main.bin
+	toolchain/bin/linux/clang $(CFLAGS) $^ $(LDFLAGS) -o build/main.elf
+	toolchain/bin/linux/llvm-objcopy -O ihex build/main.elf build/main.hex
+	toolchain/bin/linux/llvm-objcopy -O binary build/main.elf build/main.bin
 
 clean:
 	@set -e
-	rm -rf build/*
+	rmdir build
 
 # flash:
 # 	@set -e
@@ -39,9 +36,6 @@ clean:
 flash:
 	@set -e
 	for id in $$(pyocd json | jq -r '.boards[].unique_id'); do \
-	    pyocd flash build/main.hex --target nrf52 --uid $$id & \
+	    toolchain/bin/linux/pyocd flash build/main.hex --target nrf52 --uid $$id & \
 	wait; \
 	done; \
-
-disasm:
-	arm-none-eabi-objdump -m arm -D -M force-thumb build/main.elf
