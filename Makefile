@@ -27,7 +27,7 @@ compile: $(SRCS)
 
 clean:
 	@set -e
-	rmdir build
+	rm -rf build/*
 
 # flash:
 # 	@set -e
