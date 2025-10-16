@@ -804,14 +804,17 @@ void drawImage(string img) {
 ///////////////////////////////////////////////////////////////////////////////
 
 namespace sound {
-void tone(float freq, u64 duration_ms, u8 volume) {
-  if (freq <= 0 || volume == 0)
+void tone(u32 freq, u64 duration, u8 volume) {
+  if (freq == 0 || volume == 0) {
+    wait(duration * 1000);
     return;
-
-  u32 period_us = (u32)(1000000.0f / freq);
-  u32 high_time = (period_us * volume) / 100;
-  u32 low_time = period_us - high_time;
-  u64 periods = (duration_ms * 1000) / period_us;
+  }
+  u32 period = 1000000 / freq;
+  u32 high_time = period / (10000 / volume);
+  if (high_time == 0)
+    high_time = 1;
+  u32 low_time = period - high_time;
+  u64 periods = (duration * 1000) / period;
   for (u64 i = 0; i < periods; i++) {
     pins::setDigital(Pin::SPEAKER, 1);
     wait(high_time);
@@ -824,6 +827,8 @@ void tone(float freq, u64 duration_ms, u8 volume) {
 ///////////////////////////////////////////////////////////////////////////////
 
 void wait(u64 us) {
+  if (us == 0)
+    return;
   Peripheral::TIMER0->BITMODE = 0x3;
   Peripheral::TIMER0->CC[0] = us;
   Peripheral::TIMER0->EVENTS_COMPARE[0] = 0x0;
@@ -848,6 +853,7 @@ void runAfter(void (*func)(), u64 us) {
     Peripheral::TIMER3->TASKS_STOP = 0x1;
     Peripheral::TIMER3->EVENTS_COMPARE[0] = 0x0;
     timer3_callback = nullptr;
+    return;
   }
   timer3_callback = func;
   Peripheral::NVIC->ICPR[0] = 0x4000000;
@@ -872,6 +878,7 @@ void runEvery(void (*func)(), u64 us) {
     Peripheral::TIMER4->TASKS_STOP = 0x1;
     Peripheral::TIMER4->EVENTS_COMPARE[0] = 0x0;
     timer4_callback = nullptr;
+    return;
   }
   timer4_callback = func;
   Peripheral::NVIC->ICPR[0] = 0x8000000;
